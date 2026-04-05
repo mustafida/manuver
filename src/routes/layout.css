@@ -1,2 +1,25 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
+
+@theme {
+  --color-pln-blue: #00A2E9;
+  --color-pln-blue-dark: #007BB5;
+  --color-pln-yellow: #FFCC00;
+  --color-pln-yellow-dark: #E6B800;
+  --color-pln-cyan: #00A8E8;
+  --color-pln-dark: #1E293B;
+  --color-pln-light: #F8FAFC;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Glassmorphism utilities */
+@utility glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
