@@ -190,7 +190,7 @@
 									<select id="penyulangAsal" name="penyulangAsalId" disabled={!selectedUlpAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
 										<option value="">-- Pilih Penyulang --</option>
 										{#each penyulangsAsal as p}
-											<option value={p.id}>{p.nama}</option>
+											<option value={p.id}>{p.nama} (GI: {p.garduIndukNama || 'N/A'}, TRF: {p.trf || '-'})</option>
 										{/each}
 									</select>
 								</div>
@@ -216,7 +216,7 @@
 									<select id="penyulangTujuan" name="penyulangTujuanId" disabled={!selectedUlpTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
 										<option value="">-- Pilih Penyulang --</option>
 										{#each penyulangsTujuan as p}
-											<option value={p.id}>{p.nama}</option>
+											<option value={p.id}>{p.nama} (GI: {p.garduIndukNama || 'N/A'}, TRF: {p.trf || '-'})</option>
 										{/each}
 									</select>
 								</div>

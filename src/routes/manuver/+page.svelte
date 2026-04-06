@@ -136,7 +136,8 @@
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">ULP</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban (Ampere)</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-right">Waktu Manuver</th>
+						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Waktu Manuver</th>
+						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-right">Aksi</th>
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-slate-50">
@@ -151,7 +152,7 @@
 						</tr>
 					{:else}
 						{#each filteredManuvers as m}
-							<tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer border-l-4 border-l-transparent hover:border-l-[#00A2E9]">
+							<tr class="hover:bg-slate-50/80 transition-colors group border-l-4 border-l-transparent hover:border-l-[#00A2E9]">
 								<td class="py-5 px-6">
 									<div class="flex items-center gap-3">
 										<div class={cn(
@@ -200,6 +201,19 @@
 											</span>
 										{/if}
 									</div>
+								</td>
+								<td class="py-5 px-6 text-right">
+									{#if m.status === 'AKTIF'}
+										<form action="?/normalize" method="POST" use:enhance>
+											<input type="hidden" name="id" value={m.id}>
+											<button type="submit" class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2 px-4 rounded-xl shadow-md shadow-[#00A2E9]/20 transition-all text-[10px] uppercase flex items-center gap-1 ml-auto">
+												<CheckCircle2 class="w-3 h-3" />
+												Normalkan
+											</button>
+										</form>
+									{:else}
+										<span class="text-slate-300 text-[10px] font-bold uppercase">-</span>
+									{/if}
 								</td>
 							</tr>
 						{/each}

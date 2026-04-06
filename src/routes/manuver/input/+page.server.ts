@@ -44,7 +44,9 @@ export const load: PageServerLoad = async () => {
 			.orderBy(desc(manuver.waktuManuver))
 			.limit(50); // Get recent 50 entries 
 
-		return { listPenyulang, listManuver: listManuver as any };
+		const listGarduInduk = await db.select().from(garduInduk).orderBy(garduInduk.nama);
+
+		return { listPenyulang, listManuver: listManuver as any, listGarduInduk };
 	} catch (error) {
 		console.error('INPUT LOAD ERROR:', error);
 		return { listPenyulang: [], listManuver: [] };

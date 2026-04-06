@@ -67,10 +67,10 @@
 					<Database class="w-5 h-5" />
 					<h2 class="text-lg font-bold">Daftar Gardu Induk</h2>
 				</div>
-				<button class="flex items-center gap-2 bg-[#4285F4] hover:bg-[#3367D6] text-white px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95">
+				<a href="/gardu-induk" class="flex items-center gap-2 bg-[#4285F4] hover:bg-[#3367D6] text-white px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95">
 					<Plus class="w-4 h-4" />
 					Tambah GI
-				</button>
+				</a>
 			</div>
 
 			<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -129,10 +129,10 @@
 					<Activity class="w-5 h-5" />
 					<h2 class="text-lg font-bold">Daftar Penyulang</h2>
 				</div>
-				<button class="flex items-center gap-2 bg-[#00A2E9] hover:bg-[#0089C5] text-white px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95">
+				<a href="/penyulang" class="flex items-center gap-2 bg-[#00A2E9] hover:bg-[#0089C5] text-white px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95">
 					<Plus class="w-4 h-4" />
 					Tambah Penyulang
-				</button>
+				</a>
 			</div>
 
 			<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">

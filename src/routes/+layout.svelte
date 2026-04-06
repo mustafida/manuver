@@ -12,7 +12,8 @@
 		Bell,
 		ChevronRight,
 		Database,
-		History
+		History,
+		FileSpreadsheet
 	} from 'lucide-svelte';
 	import { clsx, type ClassValue } from 'clsx';
 	import { twMerge } from 'tailwind-merge';
@@ -28,6 +29,7 @@
 		{ name: 'Input Manuver', href: '/manuver/input', icon: FileEdit },
 		{ name: 'Riwayat Manuver', href: '/manuver', icon: History },
 		{ name: 'Data Master', href: '/master', icon: Database },
+		{ name: 'Export Data', href: '/export', icon: FileSpreadsheet },
 	];
 
 	let isSidebarCollapsed = $state(false);
@@ -96,6 +98,7 @@
 			<div class="pt-8 opacity-20 border-t border-white/20 mx-4"></div>
 			
 			<button 
+				onclick={() => { if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) window.location.href = '/' }}
 				class={cn(
 					"w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-white/70 hover:bg-red-500/10 hover:text-red-300 group mt-4"
 				)}
@@ -110,7 +113,7 @@
 		<!-- Sidebar Footer -->
 		<div class="p-6 border-t border-white/10">
 			{#if !isSidebarCollapsed}
-				<div class="bg-white/10 rounded-xl p-4 flex items-center gap-3">
+				<div class="bg-white/10 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-white/20 transition-all" onclick={() => alert('Menu Profil Administrator')}>
 					<div class="w-10 h-10 rounded-full bg-[#FFCC00]/20 flex items-center justify-center border border-[#FFCC00]/30">
 						<User class="w-5 h-5 text-[#FFCC00]" />
 					</div>
@@ -140,14 +143,14 @@
 			</div>
 
 			<div class="flex items-center gap-6">
-				<button class="relative p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-all">
+				<button onclick={() => alert('Semua manuver terpantau. Tidak ada notifikasi mendesak.')} class="relative p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-all">
 					<Bell class="w-5 h-5" />
 					<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
 				</button>
 				
 				<div class="h-8 w-px bg-slate-200"></div>
 
-				<div class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all">
+				<div onclick={() => alert('Pengaturan Profil Dispatcher')} class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all">
 					<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#005B8F] to-[#00A2E9] flex items-center justify-center text-white border-2 border-white shadow-md overflow-hidden">
 						<User class="w-6 h-6" />
 					</div>

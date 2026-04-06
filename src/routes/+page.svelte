@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
 	import { 
 		Activity, 
 		Zap, 
@@ -304,10 +305,13 @@
 												<p class="text-2xl font-black text-blue-600">{m.bebanAmpereManuver} <span class="text-sm font-bold opacity-60">A</span></p>
 											</div>
 										</div>
-										<button class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00A2E9]/20 transition-all text-sm flex items-center gap-2">
-											<CheckCircle2 class="w-4 h-4" />
-											Normalkan
-										</button>
+										<form action="/manuver?/normalize" method="POST" use:enhance>
+											<input type="hidden" name="id" value={m.id}>
+											<button type="submit" class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00A2E9]/20 transition-all text-sm flex items-center gap-2">
+												<CheckCircle2 class="w-4 h-4" />
+												Normalkan
+											</button>
+										</form>
 									</div>
 								</div>
 							</div>

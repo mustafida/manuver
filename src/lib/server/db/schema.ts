@@ -12,7 +12,7 @@ export const penyulang = mysqlTable('penyulang', {
 	garduIndukId: int('gardu_induk_id').notNull(),
 	trf: varchar('trf', { length: 100 }),
 	inputArusSiang: float('input_arus_siang'),
-	ulp: mysqlEnum('ulp', ['Bangkalan', 'Kamal', 'Blega', 'Sampang', 'Pamekasan', 'Sumenep', 'Ketapang', 'Waru', 'Ambunten']).notNull(),
+	ulp: varchar('ulp', { length: 255 }).notNull(),
 });
 
 export const manuver = mysqlTable('manuver', {
