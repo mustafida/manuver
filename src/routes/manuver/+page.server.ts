@@ -1,41 +1,61 @@
 import { db } from '$lib/server/db';
 import { manuver, penyulang } from '$lib/server/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-	const listPenyulang = await db.query.penyulang.findMany({
-		with: { garduInduk: true },
-		orderBy: [desc(penyulang.nama)]
-	});
-	return { listPenyulang };
+	try {
+		// Fetch all maneuvers with relations
+		const listManuver = await db.select({
+			id: manuver.id,
+			waktuManuver: manuver.waktuManuver,
+			waktuPenormalan: manuver.waktuPenormalan,
+			bebanAmpereManuver: manuver.bebanAmpereManuver,
+			status: manuver.status,
+			penyulangAsal: { nama: sql<string>`p1.nama`, ulp: sql<string>`p1.ulp` },
+			penyulangTujuan: { nama: sql<string>`p2.nama`, ulp: sql<string>`p2.ulp` },
+		})
+		.from(manuver)
+		.innerJoin(sql`penyulang p1`, eq(manuver.penyulangAsalId, sql`p1.id`))
+		.innerJoin(sql`penyulang p2`, eq(manuver.penyulangTujuanId, sql`p2.id`))
+		.orderBy(desc(manuver.waktuManuver));
+
+		// Fetch stats for the top cards
+		const totalCountResult = await db.select({ count: sql<number>`count(*)` }).from(manuver);
+		const activeCountResult = await db.select({ count: sql<number>`count(*)` }).from(manuver).where(eq(manuver.status, 'AKTIF'));
+		const normalCountResult = await db.select({ count: sql<number>`count(*)` }).from(manuver).where(eq(manuver.status, 'NORMAL'));
+
+		const stats = {
+			total: totalCountResult[0]?.count || 0,
+			active: activeCountResult[0]?.count || 0,
+			normal: normalCountResult[0]?.count || 0
+		};
+
+		return { listManuver, stats };
+	} catch (error) {
+		console.error('LOAD MANUVER ERROR:', error);
+		return { listManuver: [], stats: { total: 0, active: 0, normal: 0 } };
+	}
 };
 
 export const actions: Actions = {
-	create: async ({ request }) => {
+	// Action to mark as normal (used from both dashboard and list)
+	normalize: async ({ request }) => {
 		const formData = await request.formData();
-		const penyulangAsalId = Number(formData.get('penyulangAsalId'));
-		const penyulangTujuanId = Number(formData.get('penyulangTujuanId'));
-		const bebanAmpereManuver = Number(formData.get('bebanAmpereManuver'));
-		const bebanSebelum = Number(formData.get('bebanSebelum'));
-		const keterangan = formData.get('keterangan') as string;
-		const waktuManuver = new Date(formData.get('waktuManuver') as string);
+		const id = Number(formData.get('id'));
+		const bebanSesudah = Number(formData.get('bebanSesudah'));
 
-		if (!penyulangAsalId || !penyulangTujuanId || isNaN(bebanAmpereManuver) || isNaN(bebanSebelum)) {
-			return fail(400, { message: 'Data wajib belum diisi lengkap' });
-		}
+		if (!id) return fail(400, { message: 'ID tidak ditemukan' });
 
-		await db.insert(manuver).values({
-			penyulangAsalId,
-			penyulangTujuanId,
-			waktuManuver: isNaN(waktuManuver.getTime()) ? new Date() : waktuManuver,
-			bebanAmpereManuver,
-			bebanSebelum,
-			keterangan,
-			status: 'AKTIF'
-		});
+		await db.update(manuver)
+			.set({ 
+				status: 'NORMAL', 
+				waktuPenormalan: new Date(),
+				bebanSesudah: bebanSesudah || 0
+			})
+			.where(eq(manuver.id, id));
 
-		redirect(303, '/');
+		return { success: true };
 	}
-};
+}

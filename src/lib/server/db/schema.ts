@@ -19,11 +19,13 @@ export const manuver = mysqlTable('manuver', {
 	id: int('id').autoincrement().primaryKey(),
 	penyulangAsalId: int('penyulang_asal_id').notNull(),
 	penyulangTujuanId: int('penyulang_tujuan_id').notNull(),
+	section: varchar('section', { length: 255 }),
 	waktuManuver: datetime('waktu_manuver').notNull(),
 	waktuPenormalan: datetime('waktu_penormalan'),
 	bebanAmpereManuver: float('beban_ampere_manuver').notNull(),
 	bebanSebelum: float('beban_sebelum').notNull(),
 	bebanSesudah: float('beban_sesudah'),
+	pelaksanaan: varchar('pelaksanaan', { length: 255 }),
 	keterangan: text('keterangan'),
 	status: mysqlEnum('status', ['AKTIF', 'NORMAL']).notNull().default('AKTIF'),
 });
