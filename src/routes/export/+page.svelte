@@ -61,7 +61,7 @@
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Tujuan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban Manuver</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban Sblm / Ssdh</th>
+						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Section</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Manuver</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Penormalan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Pelaksanaan</th>
@@ -101,8 +101,8 @@
 									</span>
 								</td>
 								<td class="py-4 px-6 text-right font-black text-slate-800">{m.bebanAmpereManuver} A</td>
-								<td class="py-4 px-6 text-right text-xs font-bold text-slate-500">
-									{m.bebanSebelum} A / {m.bebanSesudah !== null ? m.bebanSesudah + ' A' : '-'}
+								<td class="py-4 px-6 text-center text-xs font-bold text-slate-500">
+									{m.section || '-'}
 								</td>
 								<td class="py-4 px-6 text-center text-sm font-bold text-slate-700">{formatDate(m.waktuManuver)}</td>
 								<td class="py-4 px-6 text-center text-sm font-bold text-emerald-600">{formatDate(m.waktuPenormalan)}</td>

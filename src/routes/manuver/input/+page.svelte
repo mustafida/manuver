@@ -32,7 +32,10 @@
 	let activeTab = $state<'input' | 'riwayat'>('input');
 
 	// Dropdown states
-	const ulps = [...new Set(data.listPenyulang.map(p => p.ulp))];
+	const ulps = [
+		'BANGKALAN', 'KAMAL', 'SAMPANG', 'BLEGA', 'KETAPANG',
+		'PAMEKASAN', 'WARU', 'SUMENEP', 'AMBUNTEN'
+	];
 	
 	let selectedUlpAsal = $state('');
 	let selectedUlpTujuan = $state('');
@@ -40,11 +43,11 @@
 	let selectedTujuanId = $state<number | null>(null);
 
 	const penyulangsAsal = $derived(
-		data.listPenyulang.filter(p => selectedUlpAsal ? p.ulp === selectedUlpAsal : true)
+		data.listPenyulang.filter(p => selectedUlpAsal ? p.ulp.includes(selectedUlpAsal) : true)
 	);
 
 	const penyulangsTujuan = $derived(
-		data.listPenyulang.filter(p => selectedUlpTujuan ? p.ulp === selectedUlpTujuan : true)
+		data.listPenyulang.filter(p => selectedUlpTujuan ? p.ulp.includes(selectedUlpTujuan) : true)
 	);
 
 	const getNowStr = () => {

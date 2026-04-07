@@ -44,7 +44,9 @@ export const load: PageServerLoad = async () => {
 				id: p.id,
 				nama: p.nama,
 				ulp: p.ulp,
-				garduIndukNama: gi ? gi.nama : '-'
+				garduIndukNama: gi ? gi.nama : '-',
+				bebanAsli: p.bebanAsli,
+				bebanSekarang: p.bebanSekarang
 			};
 		});
 

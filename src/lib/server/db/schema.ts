@@ -13,6 +13,8 @@ export const penyulang = mysqlTable('penyulang', {
 	trf: varchar('trf', { length: 100 }),
 	inputArusSiang: float('input_arus_siang'),
 	ulp: varchar('ulp', { length: 255 }).notNull(),
+	bebanAsli: float('beban_asli').default(0),
+	bebanSekarang: float('beban_sekarang').default(0),
 });
 
 export const manuver = mysqlTable('manuver', {

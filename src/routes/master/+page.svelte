@@ -142,6 +142,7 @@
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest w-24">ID</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">Penyulang</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">Gardu Induk</th>
+							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-center">Beban (Asli / Sisa)</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">ULP</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-right">Aksi</th>
 						</tr>
@@ -153,18 +154,40 @@
 							</tr>
 						{:else}
 							{#each data.listPenyulang as p}
-								<tr class="hover:bg-slate-50 transition-colors group">
+								<tr class={cn(
+									"transition-colors group",
+									p.bebanSekarang < p.bebanAsli ? "bg-red-50 hover:bg-red-100" : "hover:bg-slate-50"
+								)}>
 									<td class="py-4 px-6">
-										<span class="text-slate-300 font-bold text-xs">#{p.id}</span>
+										<span class={cn(
+											"font-bold text-xs",
+											p.bebanSekarang < p.bebanAsli ? "text-red-400" : "text-slate-300"
+										)}>#{p.id}</span>
 									</td>
 									<td class="py-4 px-6">
-										<p class="font-black text-slate-700">{p.nama}</p>
+										<p class={cn(
+											"font-black text-slate-700",
+											p.bebanSekarang < p.bebanAsli && "text-red-700"
+										)}>{p.nama}</p>
 									</td>
 									<td class="py-4 px-6">
-										<p class="text-xs font-bold text-slate-500">{p.garduIndukNama || '-'}</p>
+										<p class={cn(
+											"text-xs font-bold text-slate-500",
+											p.bebanSekarang < p.bebanAsli && "text-red-500"
+										)}>{p.garduIndukNama || '-'}</p>
+									</td>
+									<td class="py-4 px-6 text-center">
+										<div class="inline-flex gap-2 font-black">
+											<span class="text-slate-400">{p.bebanAsli} A</span>
+											<span class="text-slate-300">/</span>
+											<span class={p.bebanSekarang < p.bebanAsli ? "text-red-600" : "text-emerald-600"}>{p.bebanSekarang} A</span>
+										</div>
 									</td>
 									<td class="py-4 px-6">
-										<p class="text-[10px] font-black uppercase text-slate-400 bg-slate-100 px-2.5 py-0.5 rounded inline-block">{p.ulp}</p>
+										<p class={cn(
+											"text-[10px] font-black uppercase bg-slate-100 px-2.5 py-0.5 rounded inline-block",
+											p.bebanSekarang < p.bebanAsli ? "text-red-500 bg-red-100/50" : "text-slate-400"
+										)}>{p.ulp}</p>
 									</td>
 									<td class="py-4 px-6 text-right">
 										<form action="?/deletePenyulang" method="POST" use:enhance class="inline">
