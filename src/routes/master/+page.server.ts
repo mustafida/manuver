@@ -26,6 +26,7 @@ export const load: PageServerLoad = async () => {
 		}
 
 		const penyulangs = await db.select().from(penyulang).catch(() => []);
+		const activeManeuvers = await db.select().from(manuver).where(eq(manuver.status, 'AKTIF')).catch(() => []);
 
 		// Calculate counts natively in JS to avoid strict SQL group-by/BigInt errors
 		const listGarduInduk = garduInduks.map(gi => {
@@ -40,6 +41,9 @@ export const load: PageServerLoad = async () => {
 		// Join natively in JS
 		const listPenyulang = penyulangs.map(p => {
 			const gi = garduInduks.find(g => g.id === p.garduIndukId);
+			const isSource = activeManeuvers.some(m => m.penyulangAsalId === p.id);
+			const isTarget = activeManeuvers.some(m => m.penyulangTujuanId === p.id);
+
 			return {
 				id: p.id,
 				nama: p.nama,
@@ -47,7 +51,9 @@ export const load: PageServerLoad = async () => {
 				bebanSiang: p.bebanSiang || 0,
 				bebanMalam: p.bebanMalam || 0,
 				bebanSekarang: p.bebanSekarang ?? 0,
-				garduIndukNama: gi ? gi.nama : '-'
+				garduIndukNama: gi ? gi.nama : '-',
+				isSource,
+				isTarget
 			};
 		});
 

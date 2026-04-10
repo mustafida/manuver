@@ -28,19 +28,28 @@
 
 	let { data, form }: { data: PageData, form: ActionData } = $props();
 
+	const listULP = [
+		'BANGKALAN', 'KAMAL', 'KETAPANG', 'BLEGA', 'SAMPANG', 
+		'PAMEKASAN', 'WARU', 'SUMENEP', 'AMBUNTEN'
+	];
+
 	// Dropdown states
-	let selectedGIAsal = $state<number | null>(null);
-	let selectedGITujuan = $state<number | null>(null);
+	let selectedULPAsal = $state<string | null>(null);
+	let selectedULPTujuan = $state<string | null>(null);
 	
 	let selectedAsalId = $state<number | null>(null);
 	let selectedTujuanId = $state<number | null>(null);
 
 	const penyulangsAsal = $derived(
-		data.listPenyulang.filter(p => p.garduIndukId === selectedGIAsal)
+		selectedULPAsal 
+			? data.listPenyulang.filter(p => p.ulp.toUpperCase().includes(selectedULPAsal!.toUpperCase()))
+			: []
 	);
 
 	const penyulangsTujuan = $derived(
-		data.listPenyulang.filter(p => p.garduIndukId === selectedGITujuan)
+		selectedULPTujuan 
+			? data.listPenyulang.filter(p => p.ulp.toUpperCase().includes(selectedULPTujuan!.toUpperCase()))
+			: []
 	);
 
 	// Get ULP automatically from selected penyulang
@@ -126,20 +135,20 @@
 								<h5 class="font-bold text-slate-700">Existing (Asal)</h5>
 							</div>
 							<div class="space-y-2">
-								<label for="giAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Gardu Induk</label>
-								<select id="giAsal" bind:value={selectedGIAsal} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
-									<option value={null}>-- Pilih GI --</option>
-									{#each data.listGarduInduk as gi}
-										<option value={gi.id}>{gi.nama}</option>
+								<label for="ulpAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Unit Layanan Pelanggan (ULP)</label>
+								<select id="ulpAsal" bind:value={selectedULPAsal} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
+									<option value={null}>-- Pilih ULP --</option>
+									{#each listULP as ulp}
+										<option value={ulp}>{ulp}</option>
 									{/each}
 								</select>
 							</div>
 							<div class="space-y-2">
 								<label for="penyulangAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Nama Penyulang</label>
-								<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedGIAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-									<option value={null}>-- Pilih Penyulang --</option>
+								<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedULPAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+									<option value={null}>-- Pilih Penyulang ({penyulangsAsal.length}) --</option>
 									{#each penyulangsAsal as p}
-										<option value={p.id}>{p.nama} ({p.trf || '-'})</option>
+										<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
 									{/each}
 								</select>
 							</div>
@@ -153,20 +162,20 @@
 								<h5 class="font-bold text-slate-700">Manuver Ke (Tujuan)</h5>
 							</div>
 							<div class="space-y-2">
-								<label for="giTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Gardu Induk</label>
-								<select id="giTujuan" bind:value={selectedGITujuan} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
-									<option value={null}>-- Pilih GI --</option>
-									{#each data.listGarduInduk as gi}
-										<option value={gi.id}>{gi.nama}</option>
+								<label for="ulpTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Unit Layanan Pelanggan (ULP)</label>
+								<select id="ulpTujuan" bind:value={selectedULPTujuan} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
+									<option value={null}>-- Pilih ULP --</option>
+									{#each listULP as ulp}
+										<option value={ulp}>{ulp}</option>
 									{/each}
 								</select>
 							</div>
 							<div class="space-y-2">
 								<label for="penyulangTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Nama Penyulang</label>
-								<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedGITujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-									<option value={null}>-- Pilih Penyulang --</option>
+								<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedULPTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+									<option value={null}>-- Pilih Penyulang ({penyulangsTujuan.length}) --</option>
 									{#each penyulangsTujuan as p}
-										<option value={p.id}>{p.nama} ({p.trf || '-'})</option>
+										<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
 									{/each}
 								</select>
 							</div>
