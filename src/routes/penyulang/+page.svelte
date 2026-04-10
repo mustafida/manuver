@@ -1,6 +1,11 @@
-<script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
+	import { clsx, type ClassValue } from 'clsx';
+	import { twMerge } from 'tailwind-merge';
+
+	function cn(...inputs: ClassValue[]) {
+		return twMerge(clsx(inputs));
+	}
 
 	let { data }: { data: PageData } = $props();
 
@@ -33,7 +38,7 @@
 
 			<div>
 				<label for="trf" class="block text-sm font-medium text-slate-600 mb-1">TRF</label>
-				<input type="text" id="trf" name="trf" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="Data opsional...">
+				<input type="text" id="trf" name="trf" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="Data Trafo...">
 			</div>
 
 			<div>
@@ -47,8 +52,13 @@
 			</div>
 
 			<div>
-				<label for="inputArusSiang" class="block text-sm font-medium text-slate-600 mb-1">Input Arus (Siang) *Ampere</label>
-				<input type="number" step="0.01" id="inputArusSiang" name="inputArusSiang" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="0">
+				<label for="bebanSiang" class="block text-sm font-medium text-slate-600 mb-1">Beban Siang (10.00 - 19.00) *Ampere</label>
+				<input type="number" step="0.01" min="0" id="bebanSiang" name="bebanSiang" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="0.00">
+			</div>
+
+			<div>
+				<label for="bebanMalam" class="block text-sm font-medium text-slate-600 mb-1">Beban Malam (19.00 - 10.00) *Ampere</label>
+				<input type="number" step="0.01" min="0" id="bebanMalam" name="bebanMalam" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#0089C5] border-2 focus:ring focus:ring-[#0089C5]/20 transition font-bold" placeholder="0.00">
 			</div>
 
 			<button type="submit" class="w-full bg-[#00A2E9] hover:bg-[#007BB5] text-white font-medium py-2.5 rounded-xl transition hover:-translate-y-0.5 shadow-md shadow-[#00A2E9]/20 mt-4">
@@ -66,7 +76,8 @@
 						<th class="py-3 px-6 font-medium">Nama Penyulang</th>
 						<th class="py-3 px-6 font-medium">Gardu Induk</th>
 						<th class="py-3 px-6 font-medium">TRF</th>
-						<th class="py-3 px-6 font-medium text-right">Arus Siang</th>
+						<th class="py-3 px-6 font-medium text-center">Beban (Siang/Malam)</th>
+						<th class="py-3 px-6 font-medium text-center">Beban Sekarang</th>
 						<th class="py-3 px-6 font-medium">ULP</th>
 						<th class="py-3 px-6 font-medium text-right">Aksi</th>
 					</tr>
@@ -74,10 +85,12 @@
 				<tbody>
 					{#if data.listPenyulang.length === 0}
 						<tr>
-							<td colspan="6" class="py-8 text-center text-slate-400">Belum ada data penyulang</td>
+							<td colspan="7" class="py-8 text-center text-slate-400">Belum ada data penyulang</td>
 						</tr>
 					{/if}
 					{#each data.listPenyulang as row}
+						{@const hour = new Date().getHours()}
+						{@const currentBase = (hour >= 10 && hour < 19) ? row.bebanSiang : row.bebanMalam}
 					<tr class="border-b border-slate-50 hover:bg-slate-50 transition">
 						<td class="py-3 px-6 font-medium text-slate-800">{row.nama}</td>
 						<td class="py-3 px-6 text-slate-600">
@@ -89,7 +102,22 @@
 							</span>
 						</td>
 						<td class="py-3 px-6 text-slate-500 text-sm">{row.trf || '-'}</td>
-						<td class="py-3 px-6 text-right font-medium text-[#00A2E9]">{row.inputArusSiang ? `${row.inputArusSiang} A` : '-'}</td>
+						<td class="py-3 px-6 text-center">
+							<div class="flex flex-col text-[10px] font-bold text-slate-400">
+								<span>S: {row.bebanSiang}A</span>
+								<span>M: {row.bebanMalam}A</span>
+							</div>
+						</td>
+						<td class="py-3 px-6 text-center">
+							<div class={cn(
+								"inline-flex flex-col items-center px-3 py-1 rounded-lg border",
+								(row.bebanSekarang || 0) < currentBase ? 'bg-red-50 text-red-600 border-red-100 animate-pulse' : 
+								(row.bebanSekarang || 0) > currentBase ? 'bg-orange-50 text-orange-600 border-orange-100' :
+								'bg-slate-50 text-slate-500 border-slate-100'
+							)}>
+								<span class="text-xs font-black">{row.bebanSekarang || 0}A</span>
+							</div>
+						</td>
 						<td class="py-3 px-6">
 							<span class="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-sm">{row.ulp}</span>
 						</td>

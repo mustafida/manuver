@@ -13,9 +13,11 @@ export const GET: RequestHandler = async () => {
 			bebanSebelum: manuver.bebanSebelum,
 			bebanAmpereManuver: manuver.bebanAmpereManuver,
 			bebanSesudah: manuver.bebanSesudah,
-			section: manuver.section,
+			sectionAsal: manuver.sectionAsal,
+			sectionTujuan: manuver.sectionTujuan,
 			pelaksanaan: manuver.pelaksanaan,
 			keterangan: manuver.keterangan,
+			durasi: manuver.durasi,
 			status: manuver.status,
 			penyulangAsalNama: sql<string>`p1.nama`,
 			penyulangAsalUlp: sql<string>`p1.ulp`,
@@ -48,7 +50,8 @@ export const GET: RequestHandler = async () => {
 			{ key: 'asal_penyulang', width: 25 },
 			{ key: 'tujuan_ulp', width: 15 },
 			{ key: 'tujuan_penyulang', width: 25 },
-			{ key: 'section', width: 15 },
+			{ key: 'section_asal', width: 15 },
+			{ key: 'section_tujuan', width: 15 },
 			{ key: 'beban_sebelum', width: 16 },
 			{ key: 'beban_manuver', width: 16 },
 			{ key: 'tanggal_manuver', width: 15 },
@@ -56,32 +59,34 @@ export const GET: RequestHandler = async () => {
 			{ key: 'tanggal_normal', width: 15 },
 			{ key: 'jam_normal', width: 10 },
 			{ key: 'pelaksanaan', width: 20 },
+			{ key: 'durasi', width: 15 },
 			{ key: 'keterangan', width: 40 }
 		];
 
 		// Membangun Header Baris 1
 		worksheet.getRow(1).values = [
-			'NO', 'EXISTING', '', 'MANUVER KE', '', 'SECTION', 'BEBAN EXISTING', 'BEBAN MANUVER',
-			'WAKTU MANUVER', '', 'WAKTU PENORMALAN MANUVER', '', 'PELAKSANAN', 'KETERANGAN'
+			'NO', 'EXISTING', '', 'MANUVER KE', '', 'SECTION', '', 'BEBAN EXISTING', 'BEBAN MANUVER',
+			'WAKTU MANUVER', '', 'WAKTU PENORMALAN MANUVER', '', 'EKSEKUSI', 'DURASI (MENIT)', 'KETERANGAN'
 		];
 
 		// Membangun Header Baris 2
 		worksheet.getRow(2).values = [
-			'', 'ULP', 'PENYULANG', 'ULP', 'PENYULANG', '', '', '',
-			'TANGGAL', 'JAM', 'TANGGAL', 'JAM', '', ''
+			'', 'ULP', 'PENYULANG', 'ULP', 'PENYULANG', 'ASAL', 'TUJUAN', '', '',
+			'TANGGAL', 'JAM', 'TANGGAL', 'JAM', '', '', ''
 		];
 
 		// Gabungkan (Merge) Cell yang Kosong
-		worksheet.mergeCells('A1:A2');
-		worksheet.mergeCells('B1:C1');
-		worksheet.mergeCells('D1:E1');
-		worksheet.mergeCells('F1:F2');
-		worksheet.mergeCells('G1:G2');
-		worksheet.mergeCells('H1:H2');
-		worksheet.mergeCells('I1:J1');
-		worksheet.mergeCells('K1:L1');
-		worksheet.mergeCells('M1:M2');
-		worksheet.mergeCells('N1:N2');
+		worksheet.mergeCells('A1:A2'); // NO
+		worksheet.mergeCells('B1:C1'); // EXISTING
+		worksheet.mergeCells('D1:E1'); // MANUVER KE
+		worksheet.mergeCells('F1:G1'); // SECTION
+		worksheet.mergeCells('H1:H2'); // BEBAN EXISTING
+		worksheet.mergeCells('I1:I2'); // BEBAN MANUVER
+		worksheet.mergeCells('J1:K1'); // WAKTU MANUVER
+		worksheet.mergeCells('L1:M1'); // WAKTU PENORMALAN
+		worksheet.mergeCells('N1:N2'); // EKSEKUSI
+		worksheet.mergeCells('O1:O2'); // DURASI
+		worksheet.mergeCells('P1:P2'); // KETERANGAN
 
 		// Styling Header Custom (Baris 1 & 2)
 		const borderDashedStyle = { style: 'mediumDashed' } as any;
@@ -112,7 +117,8 @@ export const GET: RequestHandler = async () => {
 				asal_penyulang: m.penyulangAsalNama,
 				tujuan_ulp: m.penyulangTujuanUlp,
 				tujuan_penyulang: m.penyulangTujuanNama,
-				section: m.section || '-',
+				section_asal: m.sectionAsal || '-',
+				section_tujuan: m.sectionTujuan || '-',
 				beban_sebelum: m.bebanSebelum,
 				beban_manuver: m.bebanAmpereManuver,
 				tanggal_manuver: formatDatePart(m.waktuManuver),
@@ -120,6 +126,7 @@ export const GET: RequestHandler = async () => {
 				tanggal_normal: m.status === 'NORMAL' ? formatDatePart(m.waktuPenormalan) : '-',
 				jam_normal: m.status === 'NORMAL' ? formatTimePart(m.waktuPenormalan) : '-',
 				pelaksanaan: m.pelaksanaan || '-',
+				durasi: m.status === 'NORMAL' ? (m.durasi ?? '-') : 'PROSES',
 				keterangan: m.keterangan || '-'
 			});
 
@@ -133,7 +140,7 @@ export const GET: RequestHandler = async () => {
 				};
 
 				// Rata tengah
-				if ([1, 6, 7, 8, 9, 10, 11, 12, 13].includes(colNumber)) {
+				if ([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(colNumber)) {
 					cell.alignment = { vertical: 'middle', horizontal: 'center' };
 				} else {
 					cell.alignment = { vertical: 'middle', horizontal: 'left' };

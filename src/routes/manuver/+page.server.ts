@@ -9,9 +9,12 @@ export const load: PageServerLoad = async () => {
 		// Fetch all maneuvers with relations
 		const listManuver = await db.select({
 			id: manuver.id,
+			sectionAsal: manuver.sectionAsal,
+			sectionTujuan: manuver.sectionTujuan,
 			waktuManuver: manuver.waktuManuver,
 			waktuPenormalan: manuver.waktuPenormalan,
 			bebanAmpereManuver: manuver.bebanAmpereManuver,
+			durasi: manuver.durasi,
 			status: manuver.status,
 			penyulangAsal: { nama: sql<string>`p1.nama`, ulp: sql<string>`p1.ulp` },
 			penyulangTujuan: { nama: sql<string>`p2.nama`, ulp: sql<string>`p2.ulp` },
@@ -48,14 +51,60 @@ export const actions: Actions = {
 
 		if (!id) return fail(400, { message: 'ID tidak ditemukan' });
 
-		await db.update(manuver)
-			.set({ 
-				status: 'NORMAL', 
-				waktuPenormalan: new Date(),
-				bebanSesudah: bebanSesudah || 0
-			})
-			.where(eq(manuver.id, id));
+		try {
+			await db.transaction(async (tx) => {
+				// 1. Get the maneuver details to know the amount and IDs
+				const [m] = await tx.select().from(manuver).where(eq(manuver.id, id)).limit(1);
+				if (!m || m.status === 'NORMAL') return;
 
-		return { success: true };
+				// 2. Update status
+				const now = new Date();
+				const durasi = Math.floor((now.getTime() - m.waktuManuver.getTime()) / (1000 * 60));
+
+				await tx.update(manuver)
+					.set({ 
+						status: 'NORMAL', 
+						waktuPenormalan: now,
+						bebanSesudah: bebanSesudah || 0,
+						durasi: durasi
+					})
+					.where(eq(manuver.id, id));
+
+				// 3. RESTORE LOADS
+				// Add back to Asal
+				await tx.execute(sql`
+					UPDATE penyulang 
+					SET beban_sekarang = beban_sekarang + ${m.bebanAmpereManuver} 
+					WHERE id = ${m.penyulangAsalId}
+				`);
+				// Deduct from Tujuan
+				await tx.execute(sql`
+					UPDATE penyulang 
+					SET beban_sekarang = beban_sekarang - ${m.bebanAmpereManuver} 
+					WHERE id = ${m.penyulangTujuanId}
+				`);
+			});
+
+			return { success: true };
+		} catch (e) {
+			console.error('NORMALIZATION ERROR:', e);
+			return fail(500, { message: 'Gagal melakukan penormalan.' });
+		}
+	},
+
+	// Action to delete a maneuver record
+	delete: async ({ request }) => {
+		const formData = await request.formData();
+		const id = Number(formData.get('id'));
+
+		if (!id) return fail(400, { message: 'ID tidak ditemukan' });
+
+		try {
+			await db.delete(manuver).where(eq(manuver.id, id));
+			return { success: true };
+		} catch (e) {
+			console.error('DELETE ERROR:', e);
+			return fail(500, { message: 'Gagal menghapus data manuver.' });
+		}
 	}
-}
+};

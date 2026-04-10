@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { manuver, penyulang, garduInduk } from '$lib/server/db/schema';
-import { desc, eq, aliasedTable } from 'drizzle-orm';
+import { desc, eq, aliasedTable, sql } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -12,6 +12,8 @@ export const load: PageServerLoad = async () => {
 				nama: penyulang.nama,
 				ulp: penyulang.ulp,
 				trf: penyulang.trf,
+				bebanSiang: penyulang.bebanSiang,
+				bebanMalam: penyulang.bebanMalam,
 				garduIndukId: penyulang.garduIndukId,
 				garduIndukNama: garduInduk.nama
 			})
@@ -19,37 +21,12 @@ export const load: PageServerLoad = async () => {
 			.leftJoin(garduInduk, eq(penyulang.garduIndukId, garduInduk.id))
 			.orderBy(penyulang.ulp, penyulang.nama);
 
-		const pAsal = aliasedTable(penyulang, 'pAsal');
-		const pTujuan = aliasedTable(penyulang, 'pTujuan');
-
-		const listManuver = await db
-			.select({
-				id: manuver.id,
-				section: manuver.section,
-				waktuManuver: manuver.waktuManuver,
-				waktuPenormalan: manuver.waktuPenormalan,
-				bebanSebelum: manuver.bebanSebelum,
-				bebanAmpereManuver: manuver.bebanAmpereManuver,
-				pelaksanaan: manuver.pelaksanaan,
-				keterangan: manuver.keterangan,
-				status: manuver.status,
-				penyulangAsalNama: pAsal.nama,
-				penyulangAsalUlp: pAsal.ulp,
-				penyulangTujuanNama: pTujuan.nama,
-				penyulangTujuanUlp: pTujuan.ulp
-			})
-			.from(manuver)
-			.leftJoin(pAsal, eq(manuver.penyulangAsalId, pAsal.id))
-			.leftJoin(pTujuan, eq(manuver.penyulangTujuanId, pTujuan.id))
-			.orderBy(desc(manuver.waktuManuver))
-			.limit(50); // Get recent 50 entries 
-
 		const listGarduInduk = await db.select().from(garduInduk).orderBy(garduInduk.nama);
 
-		return { listPenyulang, listManuver: listManuver as any, listGarduInduk };
+		return { listPenyulang, listGarduInduk };
 	} catch (error) {
 		console.error('INPUT LOAD ERROR:', error);
-		return { listPenyulang: [], listManuver: [] };
+		return { listPenyulang: [], listGarduInduk: [] };
 	}
 };
 
@@ -59,41 +36,67 @@ export const actions: Actions = {
 
 		const penyulangAsalId = Number(formData.get('penyulangAsalId'));
 		const penyulangTujuanId = Number(formData.get('penyulangTujuanId'));
-		const section = formData.get('section')?.toString() || null;
+		const sectionAsal = formData.get('sectionAsal')?.toString()?.trim();
+		const sectionTujuan = formData.get('sectionTujuan')?.toString()?.trim();
 		const bebanSebelum = Number(formData.get('bebanSebelum'));
 		const bebanAmpereManuver = Number(formData.get('bebanAmpereManuver'));
 		const waktuManuverStr = formData.get('waktuManuver')?.toString();
 		const waktuPenormalanStr = formData.get('waktuPenormalan')?.toString();
-		const pelaksanaan = formData.get('pelaksanaan')?.toString() || null;
-		const keterangan = formData.get('keterangan')?.toString() || null;
+		const pelaksanaan = formData.get('pelaksanaan')?.toString()?.trim(); // This will be dropdown value
+		const keterangan = formData.get('keterangan')?.toString()?.trim();
 
-		// Validation
-		if (!penyulangAsalId || !penyulangTujuanId) {
-			return fail(400, { message: 'Penyulang Existing dan Manuver Ke wajib dipilih.' });
-		}
-		if (!waktuManuverStr) {
-			return fail(400, { message: 'Waktu Manuver wajib diisi.' });
-		}
-		if (isNaN(bebanAmpereManuver) || bebanAmpereManuver <= 0) {
-			return fail(400, { message: 'Beban Manuver harus angka > 0.' });
-		}
+		// Validation according to gemini.md: "Semua field wajib"
+		if (!penyulangAsalId) return fail(400, { message: 'Penyulang Asal wajib dipilih.' });
+		if (!penyulangTujuanId) return fail(400, { message: 'Penyulang Tujuan wajib dipilih.' });
+		if (penyulangAsalId === penyulangTujuanId) return fail(400, { message: 'Penyulang Asal dan Tujuan tidak boleh sama.' });
+		if (!sectionAsal) return fail(400, { message: 'Section Asal wajib diisi.' });
+		if (!sectionTujuan) return fail(400, { message: 'Section Tujuan wajib diisi.' });
+		if (isNaN(bebanSebelum) || bebanSebelum <= 0) return fail(400, { message: 'Beban Existing harus angka > 0.' });
+		if (isNaN(bebanAmpereManuver) || bebanAmpereManuver <= 0) return fail(400, { message: 'Beban Manuver harus angka > 0.' });
+		if (!waktuManuverStr) return fail(400, { message: 'Waktu Manuver wajib diisi.' });
+		if (!pelaksanaan) return fail(400, { message: 'Metode Eksekusi wajib dipilih.' });
+		if (!keterangan) return fail(400, { message: 'Keterangan wajib diisi.' });
 
 		try {
 			const waktuManuver = new Date(waktuManuverStr);
 			const waktuPenormalan = waktuPenormalanStr ? new Date(waktuPenormalanStr) : null;
 
-			await db.insert(manuver).values({
-				penyulangAsalId,
-				penyulangTujuanId,
-				section,
-				waktuManuver,
-				waktuPenormalan,
-				bebanAmpereManuver,
-				bebanSebelum: bebanSebelum || 0,
-				pelaksanaan,
-				keterangan,
-				status: waktuPenormalan ? 'NORMAL' : 'AKTIF'
+			await db.transaction(async (tx) => {
+				const durasi = waktuPenormalan ? Math.floor((waktuPenormalan.getTime() - waktuManuver.getTime()) / (1000 * 60)) : null;
+
+				await tx.insert(manuver).values({
+					penyulangAsalId,
+					penyulangTujuanId,
+					sectionAsal,
+					sectionTujuan,
+					waktuManuver,
+					waktuPenormalan,
+					bebanAmpereManuver,
+					bebanSebelum: bebanSebelum || 0,
+					bebanSesudah: null, // Initial 
+					pelaksanaan,
+					keterangan,
+					durasi,
+					status: waktuPenormalan ? 'NORMAL' : 'AKTIF'
+				});
+
+				// If it's AKTIF (manuver starting), adjust the penyulang loads
+				if (!waktuPenormalan) {
+					// 1. Deduct from Asal
+					await tx.execute(sql`
+						UPDATE penyulang 
+						SET beban_sekarang = beban_sekarang - ${bebanAmpereManuver} 
+						WHERE id = ${penyulangAsalId}
+					`);
+					// 2. Add to Tujuan
+					await tx.execute(sql`
+						UPDATE penyulang 
+						SET beban_sekarang = beban_sekarang + ${bebanAmpereManuver} 
+						WHERE id = ${penyulangTujuanId}
+					`);
+				}
 			});
+
 		} catch (e) {
 			console.error('INSERT ERROR:', e);
 			return fail(500, { message: 'Gagal menyimpan data ke database.' });

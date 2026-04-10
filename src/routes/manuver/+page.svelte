@@ -12,7 +12,8 @@
 		Database,
 		ChevronLeft,
 		ChevronRight,
-		ArrowRight
+		ArrowRight,
+		Trash2
 	} from 'lucide-svelte';
 	import { clsx, type ClassValue } from 'clsx';
 	import { twMerge } from 'tailwind-merge';
@@ -133,17 +134,17 @@
 				<thead>
 					<tr class="bg-[#005B8F] text-white">
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest first:rounded-tl-3xl">Penyulang (Asal ➔ Tujuan)</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">ULP</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban (Ampere)</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Waktu Manuver</th>
+						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Waktu (Log)</th>
+						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Durasi</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-right">Aksi</th>
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-slate-50">
 					{#if filteredManuvers.length === 0}
 						<tr>
-							<td colspan="5" class="py-20 text-center space-y-4">
+							<td colspan="6" class="py-20 text-center space-y-4">
 								<div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
 									<Database class="w-8 h-8" />
 								</div>
@@ -159,18 +160,24 @@
 											"w-2 h-2 rounded-full",
 											m.status === 'AKTIF' ? "bg-red-500 animate-pulse" : "bg-emerald-500"
 										)}></div>
-										<div class="flex items-center gap-2">
-											<span class="font-black text-slate-800">{m.penyulangAsal.nama}</span>
-											<ArrowRight class="w-3 h-3 text-slate-300" />
-											<span class="font-bold text-slate-600">{m.penyulangTujuan.nama}</span>
+										<div class="flex flex-col">
+											<div class="flex items-center gap-2">
+												<span class="font-black text-slate-800">{m.penyulangAsal.nama}</span>
+												<ArrowRight class="w-3 h-3 text-slate-300" />
+												<span class="font-bold text-slate-600">{m.penyulangTujuan.nama}</span>
+											</div>
+											<div class="mt-1 flex gap-2">
+												{#if m.sectionAsal}
+													<span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">Sec.Asal: {m.sectionAsal}</span>
+												{/if}
+												{#if m.sectionTujuan}
+													<span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">Sec.Tuju: {m.sectionTujuan}</span>
+												{/if}
+											</div>
 										</div>
 									</div>
 								</td>
-								<td class="py-5 px-6 text-center">
-									<span class="inline-block bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter">
-										{m.penyulangAsal.ulp}
-									</span>
-								</td>
+
 								<td class="py-5 px-6 text-center">
 									<span class={cn(
 										"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
@@ -193,9 +200,9 @@
 								</td>
 								<td class="py-5 px-6 text-right">
 									<div class="flex flex-col items-end">
-										<span class="text-sm font-black text-slate-700 leading-none mb-1">{formatDate(m.waktuManuver)}</span>
+										<span class="text-xs font-black text-slate-700 leading-none mb-1">{formatDate(m.waktuManuver)}</span>
 										{#if m.status === 'NORMAL'}
-											<span class="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter flex items-center gap-1">
+											<span class="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter flex items-center gap-1">
 												<CheckCircle2 class="w-2.5 h-2.5" />
 												Selesai: {formatDate(m.waktuPenormalan)}
 											</span>
@@ -203,17 +210,35 @@
 									</div>
 								</td>
 								<td class="py-5 px-6 text-right">
-									{#if m.status === 'AKTIF'}
-										<form action="?/normalize" method="POST" use:enhance>
+									{#if m.durasi !== null && m.durasi !== undefined}
+										<span class="font-black text-slate-800 tabular-nums">{m.durasi}</span>
+										<span class="text-[9px] font-bold text-slate-400 ml-1">MENIT</span>
+									{:else}
+										<span class="text-slate-300 text-[10px] font-black italic">PROSES</span>
+									{/if}
+								</td>
+								<td class="py-5 px-6 text-right">
+									<div class="flex items-center justify-end gap-2">
+										{#if m.status === 'AKTIF'}
+											<form action="?/normalize" method="POST" use:enhance>
+												<input type="hidden" name="id" value={m.id}>
+												<button type="submit" class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all text-[9px] uppercase flex items-center gap-1">
+													<CheckCircle2 class="w-3 h-3" />
+													Normalkan
+												</button>
+											</form>
+										{/if}
+										<form action="?/delete" method="POST" use:enhance>
 											<input type="hidden" name="id" value={m.id}>
-											<button type="submit" class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2 px-4 rounded-xl shadow-md shadow-[#00A2E9]/20 transition-all text-[10px] uppercase flex items-center gap-1 ml-auto">
-												<CheckCircle2 class="w-3 h-3" />
-												Normalkan
+											<button 
+												type="submit" 
+												class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+												onclick={(e) => { if(!confirm('Yakin ingin menghapus data manuver ini?')) e.preventDefault(); }}
+											>
+												<Trash2 class="w-4 h-4" />
 											</button>
 										</form>
-									{:else}
-										<span class="text-slate-300 text-[10px] font-bold uppercase">-</span>
-									{/if}
+									</div>
 								</td>
 							</tr>
 						{/each}

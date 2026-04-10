@@ -11,9 +11,9 @@ export const penyulang = mysqlTable('penyulang', {
 	nama: varchar('nama', { length: 255 }).notNull(),
 	garduIndukId: int('gardu_induk_id').notNull(),
 	trf: varchar('trf', { length: 100 }),
-	inputArusSiang: float('input_arus_siang'),
 	ulp: varchar('ulp', { length: 255 }).notNull(),
-	bebanAsli: float('beban_asli').default(0),
+	bebanSiang: float('beban_siang').default(0),
+	bebanMalam: float('beban_malam').default(0),
 	bebanSekarang: float('beban_sekarang').default(0),
 });
 
@@ -21,7 +21,8 @@ export const manuver = mysqlTable('manuver', {
 	id: int('id').autoincrement().primaryKey(),
 	penyulangAsalId: int('penyulang_asal_id').notNull(),
 	penyulangTujuanId: int('penyulang_tujuan_id').notNull(),
-	section: varchar('section', { length: 255 }),
+	sectionAsal: varchar('section_asal', { length: 255 }),
+	sectionTujuan: varchar('section_tujuan', { length: 255 }),
 	waktuManuver: datetime('waktu_manuver').notNull(),
 	waktuPenormalan: datetime('waktu_penormalan'),
 	bebanAmpereManuver: float('beban_ampere_manuver').notNull(),
@@ -29,6 +30,7 @@ export const manuver = mysqlTable('manuver', {
 	bebanSesudah: float('beban_sesudah'),
 	pelaksanaan: varchar('pelaksanaan', { length: 255 }),
 	keterangan: text('keterangan'),
+	durasi: int('durasi'),
 	status: mysqlEnum('status', ['AKTIF', 'NORMAL']).notNull().default('AKTIF'),
 });
 

@@ -14,10 +14,15 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	create: async ({ request }) => {
 		const formData = await request.formData();
-		const nama = formData.get('nama') as string;
-		if (!nama) return fail(400, { message: 'Nama harus diisi' });
+		const nama = formData.get('nama')?.toString()?.trim();
+		if (!nama) return fail(400, { message: 'Nama Gardu Induk wajib diisi.' });
 
-		await db.insert(garduInduk).values({ nama });
+		try {
+			await db.insert(garduInduk).values({ nama });
+			return { success: true };
+		} catch (e) {
+			return fail(500, { message: 'Gagal menambah data.' });
+		}
 	},
 	delete: async ({ request }) => {
 		const formData = await request.formData();

@@ -83,7 +83,9 @@ async function seed() {
         }
 
         const giId = giMap[item.gi];
-        await conn.query('INSERT INTO penyulang (nama, gardu_induk_id, trf, ulp) VALUES (?, ?, ?, ?)', [item.penyulang, giId, item.trf, item.ulp.trim()]);
+        const bebanAsli = 40; // Defaulting to 40 as per user example
+        await conn.query('INSERT INTO penyulang (nama, gardu_induk_id, trf, ulp, beban_asli, beban_sekarang) VALUES (?, ?, ?, ?, ?, ?)', 
+            [item.penyulang, giId, item.trf, item.ulp.trim(), bebanAsli, bebanAsli]);
     }
 
     console.log('Seeding Done. Migrated exact Image Data.');

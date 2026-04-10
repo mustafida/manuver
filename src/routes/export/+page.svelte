@@ -61,17 +61,19 @@
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Tujuan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban Manuver</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Section</th>
+						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Sec. Asal</th>
+						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Sec. Tujuan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Manuver</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Penormalan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Pelaksanaan</th>
+						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Durasi</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-center">Keterangan</th>
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-slate-50">
 					{#if data.listManuver.length === 0}
 						<tr>
-							<td colspan="9" class="py-20 text-center space-y-4">
+							<td colspan="10" class="py-20 text-center space-y-4">
 								<div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
 									<Database class="w-8 h-8" />
 								</div>
@@ -101,12 +103,24 @@
 									</span>
 								</td>
 								<td class="py-4 px-6 text-right font-black text-slate-800">{m.bebanAmpereManuver} A</td>
-								<td class="py-4 px-6 text-center text-xs font-bold text-slate-500">
-									{m.section || '-'}
+								<td class="py-4 px-6 text-center text-[10px] font-black">
+									<span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-100">{m.sectionAsal || '-'}</span>
+								</td>
+								<td class="py-4 px-6 text-center text-[10px] font-black">
+									<span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">{m.sectionTujuan || '-'}</span>
 								</td>
 								<td class="py-4 px-6 text-center text-sm font-bold text-slate-700">{formatDate(m.waktuManuver)}</td>
 								<td class="py-4 px-6 text-center text-sm font-bold text-emerald-600">{formatDate(m.waktuPenormalan)}</td>
 								<td class="py-4 px-6 text-center text-xs font-medium text-slate-600">{m.pelaksanaan || '-'}</td>
+								<td class="py-4 px-6 text-center">
+									{#if m.durasi !== null && m.durasi !== undefined}
+										<span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter border border-blue-100">
+											{m.durasi} MENIT
+										</span>
+									{:else}
+										<span class="text-slate-300 text-[10px] font-black italic">PROSES</span>
+									{/if}
+								</td>
 								<td class="py-4 px-6 text-center text-xs text-slate-500 max-w-[200px] truncate" title={m.keterangan || ''}>{m.keterangan || '-'}</td>
 							</tr>
 						{/each}

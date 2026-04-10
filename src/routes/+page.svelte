@@ -55,20 +55,20 @@
 
 	<!-- Top Statistics Cards -->
 	<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-		<!-- Total Penyulang -->
+		<!-- Gardu Induk -->
 		<div class="bg-gradient-to-br from-[#005B8F] to-[#00A2E9] rounded-3xl p-8 shadow-xl text-white relative overflow-hidden group">
 			<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-500"></div>
 			<div class="relative z-10 flex justify-between items-start">
 				<div class="space-y-4">
-					<p class="text-white/70 font-bold uppercase tracking-widest text-xs">Total Penyulang</p>
-					<h3 class="text-5xl font-black">{stats.totalPenyulang}</h3>
+					<p class="text-white/70 font-bold uppercase tracking-widest text-xs">Gardu Induk</p>
+					<h3 class="text-5xl font-black">{stats.totalGarduInduk}</h3>
 					<div class="flex items-center gap-2 text-xs bg-white/20 py-1 px-3 rounded-full w-fit">
-						<Database class="w-3 h-3" />
-						Aktif di Sistem
+						<MapPin class="w-3 h-3" />
+						Tersebar di Wilayah
 					</div>
 				</div>
 				<div class="p-3 bg-white/20 rounded-2xl backdrop-blur-md">
-					<Zap class="w-8 h-8 text-[#FFCC00]" />
+					<Database class="w-8 h-8" />
 				</div>
 			</div>
 		</div>
@@ -91,20 +91,20 @@
 			</div>
 		</div>
 
-		<!-- Gardu Induk -->
+		<!-- Total Penyulang -->
 		<div class="bg-[#10B981] rounded-3xl p-8 shadow-xl text-white relative overflow-hidden group border-b-8 border-[#059669]">
 			<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-all duration-500"></div>
 			<div class="relative z-10 flex justify-between items-start">
 				<div class="space-y-4">
-					<p class="text-white/70 font-bold uppercase tracking-widest text-xs">Gardu Induk</p>
-					<h3 class="text-5xl font-black">{stats.totalGarduInduk}</h3>
+					<p class="text-white/70 font-bold uppercase tracking-widest text-xs">Total Penyulang</p>
+					<h3 class="text-5xl font-black">{stats.totalPenyulang}</h3>
 					<div class="flex items-center gap-2 text-xs bg-white/20 py-1 px-3 rounded-full w-fit">
-						<MapPin class="w-3 h-3" />
-						Tersebar di Wilayah
+						<Database class="w-3 h-3" />
+						Aktif di Sistem
 					</div>
 				</div>
 				<div class="p-3 bg-white/20 rounded-2xl backdrop-blur-md">
-					<Database class="w-8 h-8" />
+					<Zap class="w-8 h-8" />
 				</div>
 			</div>
 		</div>
@@ -274,8 +274,10 @@
 							<div class="bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
 								<div class="bg-[#EF4444] px-6 py-2 text-white flex justify-between items-center bg-gradient-to-r from-red-600 to-red-500">
 									<div class="flex items-center gap-2">
-										<Zap class="w-4 h-4 text-[#FFCC00]" />
-										<span class="text-xs font-black uppercase tracking-widest">Manuver Aktif</span>
+										<div class="w-7 h-7 bg-[#FFCC00] rounded-lg flex items-center justify-center overflow-hidden border border-white/20">
+											<img src="/logo-pln.png" alt="PLN" class="w-full h-full object-cover" />
+										</div>
+										<span class="text-xs font-black uppercase tracking-widest text-[#FFCC00]">Manuver Aktif</span>
 									</div>
 									<span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">{formatDate(m.waktuManuver)}</span>
 								</div>

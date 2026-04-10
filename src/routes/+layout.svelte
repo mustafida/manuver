@@ -51,13 +51,13 @@
 	>
 		<!-- Logo Section -->
 		<div class="p-6 border-b border-white/10 flex items-center gap-3">
-			<div class="w-10 h-10 bg-[#FFCC00] rounded-lg flex items-center justify-center text-[#00A2E9] shadow-lg flex-shrink-0">
-				<Zap class="w-6 h-6 fill-current" />
+			<div class="w-12 h-12 bg-[#FFCC00] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0 border border-white/20 overflow-hidden group-hover:scale-105 transition-transform duration-500">
+				<img src="/logo-pln.png" alt="PLN Logo" class="w-full h-full object-cover" />
 			</div>
 			{#if !isSidebarCollapsed}
 				<div class="flex flex-col">
-					<span class="font-bold text-xl tracking-tight leading-tight">PLN</span>
-					<span class="text-[10px] uppercase tracking-[0.2em] opacity-80 font-semibold">Manuver Beban</span>
+					<span class="font-black text-2xl tracking-tighter leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">PLN</span>
+					<span class="text-[9px] uppercase tracking-[0.3em] text-blue-200 font-black">Manuver Beban</span>
 				</div>
 			{/if}
 		</div>

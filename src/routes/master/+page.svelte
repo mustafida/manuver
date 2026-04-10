@@ -18,6 +18,15 @@
 	let { data, form }: { data: PageData, form: ActionData } = $props();
 
 	let activeTab = $state<'gi' | 'penyulang'>('gi');
+
+	// Current load type based on time: Siang (10-19), Malam (19-10)
+	function getCurrentLoadType() {
+		const hour = new Date().getHours();
+		if (hour >= 10 && hour < 19) return 'siang';
+		return 'malam';
+	}
+
+	let loadType = $derived(getCurrentLoadType());
 </script>
 
 <div class="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 pb-12">
@@ -67,10 +76,7 @@
 					<Database class="w-5 h-5" />
 					<h2 class="text-lg font-bold">Daftar Gardu Induk</h2>
 				</div>
-				<a href="/gardu-induk" class="flex items-center gap-2 bg-[#4285F4] hover:bg-[#3367D6] text-white px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95">
-					<Plus class="w-4 h-4" />
-					Tambah GI
-				</a>
+
 			</div>
 
 			<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -79,8 +85,7 @@
 						<tr class="text-slate-400 border-b border-slate-100">
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest w-24">ID</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">Nama Gardu Induk</th>
-							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">Penyulang</th>
-							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-right">Aksi</th>
+							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-right">Penyulang</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-slate-100">
@@ -97,20 +102,8 @@
 									<td class="py-5 px-6">
 										<p class="font-black text-slate-700">{gi.nama}</p>
 									</td>
-									<td class="py-5 px-6">
-										<span class="bg-slate-100 text-slate-500 font-black text-[10px] px-3 py-1 rounded-full">{gi.penyulangCount} UNIT</span>
-									</td>
 									<td class="py-5 px-6 text-right">
-										<form action="?/deleteGI" method="POST" use:enhance class="inline">
-											<input type="hidden" name="id" value={gi.id}>
-											<button 
-												type="submit" 
-												class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-												onclick={(e) => { if(!confirm('Yakin menghapus Gardu Induk ini?')) e.preventDefault(); }}
-											>
-												<Trash2 class="w-4 h-4" />
-											</button>
-										</form>
+										<span class="bg-slate-100 text-slate-500 font-black text-[10px] px-3 py-1 rounded-full">{gi.penyulangCount} UNIT</span>
 									</td>
 								</tr>
 							{/each}
@@ -129,10 +122,7 @@
 					<Activity class="w-5 h-5" />
 					<h2 class="text-lg font-bold">Daftar Penyulang</h2>
 				</div>
-				<a href="/penyulang" class="flex items-center gap-2 bg-[#00A2E9] hover:bg-[#0089C5] text-white px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95">
-					<Plus class="w-4 h-4" />
-					Tambah Penyulang
-				</a>
+
 			</div>
 
 			<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -142,9 +132,7 @@
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest w-24">ID</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">Penyulang</th>
 							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">Gardu Induk</th>
-							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-center">Beban (Asli / Sisa)</th>
-							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest">ULP</th>
-							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-right">Aksi</th>
+							<th class="py-4 px-6 font-black uppercase text-[10px] tracking-widest text-center">Beban (Asli/Sisa)</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-slate-100">
@@ -154,52 +142,39 @@
 							</tr>
 						{:else}
 							{#each data.listPenyulang as p}
-								<tr class={cn(
-									"transition-colors group",
-									p.bebanSekarang < p.bebanAsli ? "bg-red-50 hover:bg-red-100" : "hover:bg-slate-50"
-								)}>
+								{@const baseLoad = loadType === 'siang' ? p.bebanSiang : p.bebanMalam}
+								<tr class="hover:bg-slate-50 transition-colors group">
 									<td class="py-4 px-6">
-										<span class={cn(
-											"font-bold text-xs",
-											p.bebanSekarang < p.bebanAsli ? "text-red-400" : "text-slate-300"
-										)}>#{p.id}</span>
+										<span class="text-slate-300 font-bold text-xs">#{p.id}</span>
 									</td>
 									<td class="py-4 px-6">
-										<p class={cn(
-											"font-black text-slate-700",
-											p.bebanSekarang < p.bebanAsli && "text-red-700"
-										)}>{p.nama}</p>
+										<p class="font-black text-slate-700">{p.nama}</p>
 									</td>
 									<td class="py-4 px-6">
-										<p class={cn(
-											"text-xs font-bold text-slate-500",
-											p.bebanSekarang < p.bebanAsli && "text-red-500"
-										)}>{p.garduIndukNama || '-'}</p>
+										<p class="text-xs font-bold text-slate-500">{p.garduIndukNama || '-'}</p>
 									</td>
-									<td class="py-4 px-6 text-center">
-										<div class="inline-flex gap-2 font-black">
-											<span class="text-slate-400">{p.bebanAsli} A</span>
-											<span class="text-slate-300">/</span>
-											<span class={p.bebanSekarang < p.bebanAsli ? "text-red-600" : "text-emerald-600"}>{p.bebanSekarang} A</span>
+									<td class="py-4 px-6 text-center group-hover:bg-slate-50/50">
+										<div class={cn(
+											"inline-flex flex-col items-center px-4 py-2 rounded-2xl transition-all border shadow-sm",
+											p.bebanSekarang < baseLoad ? "bg-red-50 text-red-600 border-red-100 animate-pulse" : 
+											p.bebanSekarang > baseLoad ? "bg-orange-50 text-orange-600 border-orange-100" :
+											"bg-slate-50 text-slate-500 border-slate-100"
+										)}>
+											<div class="flex items-center gap-1.5 mb-1">
+												<span class="text-[9px] font-black uppercase tracking-widest opacity-60">Status:</span>
+												<span class="text-[9px] font-black uppercase tracking-widest">
+													{p.bebanSekarang < baseLoad ? 'MA-NUVER' : p.bebanSekarang > baseLoad ? 'MEMIKUL' : 'NORMAL'}
+												</span>
+											</div>
+											<div class="flex items-baseline gap-1">
+												<span class="text-lg font-black tabular-nums">{p.bebanSekarang}</span>
+												<span class="text-[10px] font-bold opacity-60">AMPERE</span>
+											</div>
+											<div class="mt-1.5 pt-1.5 border-t border-current/10 w-full flex justify-between gap-4 text-[9px] font-bold uppercase tracking-tighter opacity-70">
+												<span class={cn(loadType === 'siang' && "text-blue-600")}>Siang: {p.bebanSiang}A</span>
+												<span class={cn(loadType === 'malam' && "text-blue-600")}>Malam: {p.bebanMalam}A</span>
+											</div>
 										</div>
-									</td>
-									<td class="py-4 px-6">
-										<p class={cn(
-											"text-[10px] font-black uppercase bg-slate-100 px-2.5 py-0.5 rounded inline-block",
-											p.bebanSekarang < p.bebanAsli ? "text-red-500 bg-red-100/50" : "text-slate-400"
-										)}>{p.ulp}</p>
-									</td>
-									<td class="py-4 px-6 text-right">
-										<form action="?/deletePenyulang" method="POST" use:enhance class="inline">
-											<input type="hidden" name="id" value={p.id}>
-											<button 
-												type="submit" 
-												class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-												onclick={(e) => { if(!confirm('Yakin menghapus Penyulang ini?')) e.preventDefault(); }}
-											>
-												<Trash2 class="w-4 h-4" />
-											</button>
-										</form>
 									</td>
 								</tr>
 							{/each}
