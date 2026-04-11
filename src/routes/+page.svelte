@@ -24,6 +24,8 @@
 		return twMerge(clsx(inputs));
 	}
 
+	import { parseSqlDate } from '$lib/utils/date';
+
 	let { data }: { data: PageData } = $props();
 
 	const stats = $derived(data.stats);
@@ -36,7 +38,8 @@
 	}
 
 	function formatDate(date: string | Date) {
-		const d = typeof date === 'string' ? new Date(date.replace(' ', 'T')) : new Date(date);
+		const d = parseSqlDate(date);
+		if (!d) return '-';
 		return d.toLocaleString('id-ID', { 
 			day: '2-digit', 
 			month: 'short', 

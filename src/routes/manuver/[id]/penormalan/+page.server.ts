@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { manuver, penyulang } from '$lib/server/db/schema';
 import { eq, sql } from 'drizzle-orm';
+import { getIndonesianDate } from '$lib/utils/date';
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -27,7 +28,7 @@ export const actions: Actions = {
 		const bebanSesudah = Number(formData.get('bebanSesudah'));
 		const waktuPenormalanStr = formData.get('waktuPenormalan') as string;
 
-		let waktuPenormalan = new Date();
+		let waktuPenormalan = getIndonesianDate();
 		if (waktuPenormalanStr) {
 			waktuPenormalan = new Date(waktuPenormalanStr);
 		}

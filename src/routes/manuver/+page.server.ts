@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { manuver, penyulang } from '$lib/server/db/schema';
 import { desc, eq, sql } from 'drizzle-orm';
+import { getIndonesianDate } from '$lib/utils/date';
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -58,7 +59,7 @@ export const actions: Actions = {
 				if (!m || m.status === 'NORMAL') return;
 
 				// 2. Update status
-				const now = new Date();
+				const now = getIndonesianDate();
 				const startTime = new Date(m.waktuManuver).getTime();
 				const nowTime = now.getTime();
 				const durasi = Math.floor((nowTime - startTime) / (1000 * 60));
