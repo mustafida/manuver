@@ -59,8 +59,11 @@
 	const eksekusiOpsi = ['Remote SCADA', 'Manual Panel', 'Manual Stick'];
 
 	const getNowStr = () => {
-		// Just return UTC time in ISO format, but without the 'Z' for the datetime-local input
-		return new Date().toISOString().slice(0, 16);
+		const now = new Date();
+		// Adjust for timezone offset to get local time as ISO string for datetime-local
+		const offset = now.getTimezoneOffset() * 60000;
+		const localISOTime = new Date(now.getTime() - offset).toISOString().slice(0, 16);
+		return localISOTime;
 	};
 
 	let waktuManuver = $state(getNowStr());
@@ -69,8 +72,8 @@
 	// Auto-fill beban based on time and selected penyulang
 	$effect(() => {
 		if (selectedPenyulangAsal && waktuManuver) {
-			const hour = new Date(waktuManuver + 'Z').getUTCHours();
-			// Siang: 07:00 - 16:00 UTC
+			const hour = new Date(waktuManuver).getHours();
+			// Siang: 07:00 - 16:00 Local
 			const isSiang = hour >= 7 && hour < 16;
 			bebanSebelum = isSiang ? (selectedPenyulangAsal.bebanSiang || 0) : (selectedPenyulangAsal.bebanMalam || 0);
 		}
