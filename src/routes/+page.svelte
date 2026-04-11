@@ -312,7 +312,11 @@
 										</div>
 										<form action="/manuver?/normalize" method="POST" use:enhance>
 											<input type="hidden" name="id" value={m.id}>
-											<button type="submit" class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00A2E9]/20 transition-all text-sm flex items-center gap-2">
+											<button 
+												type="submit" 
+												class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00A2E9]/20 transition-all text-sm flex items-center gap-2"
+												onclick={(e) => { if(!confirm('Yakin ingin menormalkan beban ini?')) e.preventDefault(); }}
+											>
 												<CheckCircle2 class="w-4 h-4" />
 												Normalkan
 											</button>

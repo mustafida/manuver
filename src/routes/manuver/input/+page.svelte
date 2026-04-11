@@ -68,6 +68,7 @@
 
 	let waktuManuver = $state(getNowStr());
 	let bebanSebelum = $state<number | string>("");
+	let submitting = $state(false);
 
 	// Auto-fill beban based on time and selected penyulang
 	$effect(() => {
@@ -102,7 +103,18 @@
 	{/if}
 
 	<!-- INPUT FORM -->
-	<form method="POST" action="?/create" use:enhance class="w-full slide-in">
+	<form 
+		method="POST" 
+		action="?/create" 
+		use:enhance={() => {
+			submitting = true;
+			return async ({ update }) => {
+				await update();
+				submitting = false;
+			};
+		}} 
+		class="w-full slide-in"
+	>
 		<div class="bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-100 space-y-8 relative overflow-hidden">
 			<div class="absolute -right-20 -top-20 w-80 h-80 bg-slate-50 rounded-full pointer-events-none"></div>
 			
@@ -258,12 +270,25 @@
 			</div>
 
 			<div class="pt-8 flex gap-6 relative z-10 border-t border-slate-100">
-				<button type="reset" class="flex-1 px-8 py-5 bg-slate-100 rounded-3xl text-slate-500 font-black text-center hover:bg-slate-200 transition-all active:scale-95">
+				<button 
+					type="reset" 
+					class="flex-1 px-8 py-5 bg-slate-100 rounded-3xl text-slate-500 font-black text-center hover:bg-slate-200 transition-all active:scale-95 disabled:opacity-50"
+					disabled={submitting}
+				>
 					BATAL
 				</button>
-				<button type="submit" class="flex-[2] px-8 py-5 bg-[#00A2E9] hover:bg-[#005B8F] text-white font-black rounded-3xl shadow-2xl shadow-[#005B8F]/40 transition-all flex items-center justify-center gap-3 active:scale-95 group">
-					<Save class="w-6 h-6 group-hover:-translate-y-0.5 transition-transform" />
-					SIMPAN DATA MANUVER
+				<button 
+					type="submit" 
+					class="flex-[2] px-8 py-5 bg-[#00A2E9] hover:bg-[#005B8F] text-white font-black rounded-3xl shadow-2xl shadow-[#005B8F]/40 transition-all flex items-center justify-center gap-3 active:scale-95 group disabled:opacity-50 disabled:cursor-wait"
+					disabled={submitting}
+				>
+					{#if submitting}
+						<Activity class="w-6 h-6 animate-spin" />
+						MENYIMPAN...
+					{:else}
+						<Save class="w-6 h-6 group-hover:-translate-y-0.5 transition-transform" />
+						SIMPAN DATA MANUVER
+					{/if}
 				</button>
 			</div>
 		</div>

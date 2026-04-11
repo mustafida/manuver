@@ -59,7 +59,9 @@ export const actions: Actions = {
 
 				// 2. Update status
 				const now = new Date();
-				const durasi = Math.floor((now.getTime() - m.waktuManuver.getTime()) / (1000 * 60));
+				const startTime = new Date(m.waktuManuver).getTime();
+				const nowTime = now.getTime();
+				const durasi = Math.floor((nowTime - startTime) / (1000 * 60));
 
 				await tx.update(manuver)
 					.set({ 

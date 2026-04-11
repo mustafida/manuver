@@ -222,7 +222,11 @@
 										{#if m.status === 'AKTIF'}
 											<form action="?/normalize" method="POST" use:enhance>
 												<input type="hidden" name="id" value={m.id}>
-												<button type="submit" class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all text-[9px] uppercase flex items-center gap-1">
+												<button 
+													type="submit" 
+													class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all text-[9px] uppercase flex items-center gap-1"
+													onclick={(e) => { if(!confirm('Yakin ingin menormalkan beban ini?')) e.preventDefault(); }}
+												>
 													<CheckCircle2 class="w-3 h-3" />
 													Normalkan
 												</button>

@@ -6,6 +6,9 @@ import 'dotenv/config';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-const client = mysql.createPool(process.env.DATABASE_URL);
+const client = mysql.createPool({
+	uri: process.env.DATABASE_URL,
+	dateStrings: true // This ensures that datetime values are returned as strings, allowing us to handle "Naive" time consistently
+});
 
 export const db = drizzle(client, { schema, mode: 'default' });
