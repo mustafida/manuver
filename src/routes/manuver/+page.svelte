@@ -42,7 +42,10 @@
 
 	function formatDate(date: string | Date | null) {
 		if (!date) return '-';
-		return new Date(date).toLocaleString('id-ID', { 
+		// If it's a string from MySQL (YYYY-MM-DD HH:mm:ss), replace space with T
+		// to force it to be treated as local time in the browser/SSR.
+		const d = typeof date === 'string' ? new Date(date.replace(' ', 'T')) : new Date(date);
+		return d.toLocaleString('id-ID', { 
 			day: '2-digit', 
 			month: 'short', 
 			year: 'numeric',

@@ -36,7 +36,8 @@
 	}
 
 	function formatDate(date: string | Date) {
-		return new Date(date).toLocaleString('id-ID', { 
+		const d = typeof date === 'string' ? new Date(date.replace(' ', 'T')) : new Date(date);
+		return d.toLocaleString('id-ID', { 
 			day: '2-digit', 
 			month: 'short', 
 			year: 'numeric',
