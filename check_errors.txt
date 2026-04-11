@@ -1,0 +1,164 @@
+﻿Loading svelte-check in workspace: e:\Manuver
+Getting Svelte diagnostics...
+
+e:\Manuver\[32msrc\lib\server\db\index.ts[39m:4:21
+[31mError[39m: Cannot find module '$env/dynamic/private' or its corresponding type declarations. 
+[36mimport * as schema from './schema';
+import { env } from [35m'$env/dynamic/private'[36m;[39m
+
+e:\Manuver\[32msrc\lib\server\db\seed.ts[39m:15:56
+[31mError[39m: No overload matches this call.
+  Overload 1 of 2, '(value: { nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }): MySqlInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'inputArusSiang' does not exist in type '{ nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }'.
+  Overload 2 of 2, '(values: { nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }[]): MySqlInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'nama' does not exist in type '{ nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }[]'. 
+[36m    // Seed Penyulang
+    const [penAsalResult] = await db.insert(penyulang).[35mvalues[36m({
+        nama: 'Bangkalan 1',[39m
+
+e:\Manuver\[32msrc\lib\server\db\seed.ts[39m:23:58
+[31mError[39m: No overload matches this call.
+  Overload 1 of 2, '(value: { nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }): MySqlInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'inputArusSiang' does not exist in type '{ nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }'.
+  Overload 2 of 2, '(values: { nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }[]): MySqlInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'nama' does not exist in type '{ nama: string | SQL<unknown> | Placeholder<string, any>; garduIndukId: number | SQL<unknown> | Placeholder<string, any>; ulp: string | SQL<unknown> | Placeholder<...>; ... 4 more ...; bebanSekarang?: number | ... 3 more ... | undefined; }[]'. 
+[36m    
+    const [penTujuanResult] = await db.insert(penyulang).[35mvalues[36m({
+        nama: 'Kamal 1',[39m
+
+e:\Manuver\[32msrc\routes\+layout.svelte[39m:116:5
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m			{#if !isSidebarCollapsed}
+				[35m<div class="bg-white/10 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-white/20 transition-all" onclick={() => alert('Menu Profil Administrator')}>
+					<div class="w-10 h-10 rounded-full bg-[#FFCC00]/20 flex items-center justify-center border border-[#FFCC00]/30">
+						<User class="w-5 h-5 text-[#FFCC00]" />
+					</div>
+					<div class="flex flex-col min-w-0">
+						<p class="text-sm font-bold truncate">Administrator</p>
+						<p class="text-[10px] text-white/60 truncate uppercase tracking-tighter">Unit Induk Distribusi</p>
+					</div>
+				</div[36m>
+			{/if}[39m
+
+e:\Manuver\[32msrc\routes\+layout.svelte[39m:116:5
+[33mWarn[39m: `<div>` with a click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m			{#if !isSidebarCollapsed}
+				[35m<div class="bg-white/10 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-white/20 transition-all" onclick={() => alert('Menu Profil Administrator')}>
+					<div class="w-10 h-10 rounded-full bg-[#FFCC00]/20 flex items-center justify-center border border-[#FFCC00]/30">
+						<User class="w-5 h-5 text-[#FFCC00]" />
+					</div>
+					<div class="flex flex-col min-w-0">
+						<p class="text-sm font-bold truncate">Administrator</p>
+						<p class="text-[10px] text-white/60 truncate uppercase tracking-tighter">Unit Induk Distribusi</p>
+					</div>
+				</div[36m>
+			{/if}[39m
+
+e:\Manuver\[32msrc\routes\+layout.svelte[39m:134:5
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label`, `aria-labelledby` or `title` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m			<div class="flex items-center gap-4">
+				[35m<button 
+					onclick={() => isSidebarCollapsed = !isSidebarCollapsed}
+					class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+					</svg>
+				</button[36m>
+				<h1 class="text-xl font-bold text-slate-800 tracking-tight">Monitoring Manuver Penyulang</h1>[39m
+
+e:\Manuver\[32msrc\routes\+layout.svelte[39m:153:5
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m
+				[35m<div onclick={() => alert('Pengaturan Profil Dispatcher')} class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all">
+					<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#005B8F] to-[#00A2E9] flex items-center justify-center text-white border-2 border-white shadow-md overflow-hidden">
+						<User class="w-6 h-6" />
+					</div>
+					<div class="flex flex-col">
+						<p class="text-sm font-bold text-slate-700 leading-tight">Mustafida</p>
+						<p class="text-[11px] text-slate-400 font-medium">Dispatcher 1</p>
+					</div>
+				</div[36m>
+			</div>[39m
+
+e:\Manuver\[32msrc\routes\+layout.svelte[39m:153:5
+[33mWarn[39m: `<div>` with a click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m
+				[35m<div onclick={() => alert('Pengaturan Profil Dispatcher')} class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all">
+					<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#005B8F] to-[#00A2E9] flex items-center justify-center text-white border-2 border-white shadow-md overflow-hidden">
+						<User class="w-6 h-6" />
+					</div>
+					<div class="flex flex-col">
+						<p class="text-sm font-bold text-slate-700 leading-tight">Mustafida</p>
+						<p class="text-[11px] text-slate-400 font-medium">Dispatcher 1</p>
+					</div>
+				</div[36m>
+			</div>[39m
+
+e:\Manuver\[32msrc\routes\+page.svelte[39m:29:63
+[33mWarn[39m: This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+[36m
+	const { stats, topFeeders, activeManuvers, normalHistory } = [35mdata[36m;[39m
+
+e:\Manuver\[32msrc\routes\manuver\[id]\penormalan\+page.svelte[39m:16:3
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label`, `aria-labelledby` or `title` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m	<div class="flex items-center gap-3 mb-6">
+		[35m<a href="/" class="text-slate-400 hover:text-[#00A2E9] transition">
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+			</svg>
+		</a[36m>
+		<h2 class="text-2xl font-bold text-slate-800">Penormalan Manuver</h2>[39m
+
+e:\Manuver\[32msrc\routes\manuver\input\+page.svelte[39m:272:2
+[33mWarn[39m: Unused CSS selector ".custom-scrollbar::-webkit-scrollbar"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m<style>
+	[35m.custom-scrollbar::-webkit-scrollbar[36m {
+		width: 4px;[39m
+
+e:\Manuver\[32msrc\routes\manuver\input\+page.svelte[39m:276:2
+[33mWarn[39m: Unused CSS selector ".custom-scrollbar::-webkit-scrollbar-track"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m	}
+	[35m.custom-scrollbar::-webkit-scrollbar-track[36m {
+		background: transparent;[39m
+
+e:\Manuver\[32msrc\routes\manuver\input\+page.svelte[39m:279:2
+[33mWarn[39m: Unused CSS selector ".custom-scrollbar::-webkit-scrollbar-thumb"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m	}
+	[35m.custom-scrollbar::-webkit-scrollbar-thumb[36m {
+		background: rgba(0, 0, 0, 0.1);[39m
+
+e:\Manuver\[32msrc\routes\manuver\input\+page.svelte[39m:283:2
+[33mWarn[39m: Unused CSS selector ".custom-scrollbar::-webkit-scrollbar-thumb:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m	}
+	[35m.custom-scrollbar::-webkit-scrollbar-thumb:hover[36m {
+		background: rgba(0, 0, 0, 0.2);[39m
+
+e:\Manuver\[32msrc\routes\penyulang\+page.svelte[39m:3:22
+[31mError[39m: Expected token }
+https://svelte.dev/e/expected_token (svelte)
+[36m	import type { PageData } from './$types';
+	import { clsx, type [35m[36mClassValue } from 'clsx';
+	import { twMerge } from 'tailwind-merge';[39m
+
+e:\Manuver\[32msrc\routes\penyulang\+page.svelte[39m:3:22
+[31mError[39m: Expected token }
+https://svelte.dev/e/expected_token (js)
+[36m	import type { PageData } from './$types';
+	import { clsx, type [35m[36mClassValue } from 'clsx';
+	import { twMerge } from 'tailwind-merge';[39m
+
+====================================
+[31msvelte-check found 5 errors and 11 warnings in 7 files
+[39m

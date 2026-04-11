@@ -113,7 +113,11 @@
 		<!-- Sidebar Footer -->
 		<div class="p-6 border-t border-white/10">
 			{#if !isSidebarCollapsed}
-				<div class="bg-white/10 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-white/20 transition-all" onclick={() => alert('Menu Profil Administrator')}>
+				<button 
+					class="bg-white/10 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-white/20 transition-all w-full text-left" 
+					onclick={() => alert('Menu Profil Administrator')}
+					type="button"
+				>
 					<div class="w-10 h-10 rounded-full bg-[#FFCC00]/20 flex items-center justify-center border border-[#FFCC00]/30">
 						<User class="w-5 h-5 text-[#FFCC00]" />
 					</div>
@@ -121,7 +125,7 @@
 						<p class="text-sm font-bold truncate">Administrator</p>
 						<p class="text-[10px] text-white/60 truncate uppercase tracking-tighter">Unit Induk Distribusi</p>
 					</div>
-				</div>
+				</button>
 			{/if}
 		</div>
 	</aside>
@@ -134,6 +138,7 @@
 				<button 
 					onclick={() => isSidebarCollapsed = !isSidebarCollapsed}
 					class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"
+					aria-label="Toggle Sidebar"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -143,14 +148,22 @@
 			</div>
 
 			<div class="flex items-center gap-6">
-				<button onclick={() => alert('Semua manuver terpantau. Tidak ada notifikasi mendesak.')} class="relative p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-all">
+				<button 
+					onclick={() => alert('Semua manuver terpantau. Tidak ada notifikasi mendesak.')} 
+					class="relative p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-all"
+					aria-label="Notifications"
+				>
 					<Bell class="w-5 h-5" />
 					<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
 				</button>
 				
 				<div class="h-8 w-px bg-slate-200"></div>
 
-				<div onclick={() => alert('Pengaturan Profil Dispatcher')} class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all">
+				<button 
+					onclick={() => alert('Pengaturan Profil Dispatcher')} 
+					class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all text-left"
+					type="button"
+				>
 					<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#005B8F] to-[#00A2E9] flex items-center justify-center text-white border-2 border-white shadow-md overflow-hidden">
 						<User class="w-6 h-6" />
 					</div>
@@ -158,7 +171,7 @@
 						<p class="text-sm font-bold text-slate-700 leading-tight">Mustafida</p>
 						<p class="text-[11px] text-slate-400 font-medium">Dispatcher 1</p>
 					</div>
-				</div>
+				</button>
 			</div>
 		</header>
 		

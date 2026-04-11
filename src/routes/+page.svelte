@@ -26,7 +26,10 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const { stats, topFeeders, activeManuvers, normalHistory } = data;
+	const stats = $derived(data.stats);
+	const topFeeders = $derived(data.topFeeders);
+	const activeManuvers = $derived(data.activeManuvers);
+	const normalHistory = $derived(data.normalHistory);
 
 	function formatNumber(num: number, decimals = 1) {
 		return Number(num).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: decimals });

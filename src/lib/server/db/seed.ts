@@ -16,7 +16,7 @@ async function seed() {
         nama: 'Bangkalan 1',
         garduIndukId: giId,
         trf: 'Trafo 1',
-        inputArusSiang: 150.5,
+        bebanSiang: 150.5,
         ulp: 'Bangkalan'
     });
     
@@ -24,7 +24,7 @@ async function seed() {
         nama: 'Kamal 1',
         garduIndukId: giId,
         trf: 'Trafo 2',
-        inputArusSiang: 120.0,
+        bebanSiang: 120.0,
         ulp: 'Kamal'
     });
     
