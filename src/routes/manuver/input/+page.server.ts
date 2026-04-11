@@ -58,8 +58,8 @@ export const actions: Actions = {
 		if (!keterangan) return fail(400, { message: 'Keterangan wajib diisi.' });
 
 		try {
-			const waktuManuver = new Date(waktuManuverStr);
-			const waktuPenormalan = waktuPenormalanStr ? new Date(waktuPenormalanStr) : null;
+			const waktuManuver = new Date(waktuManuverStr + 'Z');
+			const waktuPenormalan = waktuPenormalanStr ? new Date(waktuPenormalanStr + 'Z') : null;
 
 			await db.transaction(async (tx) => {
 				const durasi = waktuPenormalan ? Math.floor((waktuPenormalan.getTime() - waktuManuver.getTime()) / (1000 * 60)) : null;

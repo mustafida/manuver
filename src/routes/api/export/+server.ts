@@ -31,12 +31,12 @@ export const GET: RequestHandler = async () => {
 
 		const formatDatePart = (date: Date | null) => {
 			if (!date) return '-';
-			return new Date(date).toLocaleString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' }).split(' ')[0];
+			return new Date(date).toLocaleString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' }).split(' ')[0];
 		};
 
 		const formatTimePart = (date: Date | null) => {
 			if (!date) return '-';
-			const time = new Date(date).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit' });
+			const time = new Date(date).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 			return time.replace('.', ':');
 		};
 
