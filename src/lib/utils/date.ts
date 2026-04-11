@@ -29,13 +29,45 @@ export function getIndonesianDate(): Date {
 }
 
 /**
- * Ensures a date string from MySQL is treated as local time
- * by inserting the 'T' separator if missing.
+ * Parses MySQL/ISO datetime values while preserving wall-clock time from DB.
+ * Timezone suffixes (Z, +07:00) are ignored intentionally to prevent UI shifts.
  */
 export function parseSqlDate(dateStr: string | Date | null): Date | null {
     if (!dateStr) return null;
-    if (dateStr instanceof Date) return dateStr;
-    
-    // Replace space with T to force local interpretation in standard environments
-    return new Date(dateStr.replace(' ', 'T'));
+    if (dateStr instanceof Date) {
+        // Normalize to a "timezone-less" local Date so display does not shift by client timezone.
+        return new Date(
+            dateStr.getFullYear(),
+            dateStr.getMonth(),
+            dateStr.getDate(),
+            dateStr.getHours(),
+            dateStr.getMinutes(),
+            dateStr.getSeconds(),
+            dateStr.getMilliseconds()
+        );
+    }
+
+    const raw = String(dateStr).trim();
+
+    // Accept: "YYYY-MM-DD HH:mm:ss", ISO, and ISO with timezone suffix (Z / +07:00).
+    // Timezone suffix is intentionally ignored so values match DB wall-clock time.
+    const match = raw.match(
+        /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?)?(?:Z|[+-]\d{2}:?\d{2})?$/
+    );
+
+    if (match) {
+        const year = Number(match[1]);
+        const month = Number(match[2]) - 1;
+        const day = Number(match[3]);
+        const hour = Number(match[4] ?? '0');
+        const minute = Number(match[5] ?? '0');
+        const second = Number(match[6] ?? '0');
+        const millisecond = Number((match[7] ?? '0').padEnd(3, '0'));
+
+        return new Date(year, month, day, hour, minute, second, millisecond);
+    }
+
+    // Fallback for unknown formats
+    const fallback = new Date(raw);
+    return Number.isNaN(fallback.getTime()) ? null : fallback;
 }
