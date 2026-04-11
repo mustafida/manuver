@@ -42,16 +42,28 @@
 		})
 	);
 
+	const MONTHS_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+	const pad2 = (n: number) => String(n).padStart(2, '0');
+
 	function formatDate(date: string | Date | null) {
+		if (!date) return '-';
+
+		const raw = String(date).trim();
+		const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+
+		if (match) {
+			const year = Number(match[1]);
+			const monthIndex = Number(match[2]) - 1;
+			const day = Number(match[3]);
+			const hour = Number(match[4]);
+			const minute = Number(match[5]);
+
+			return `${pad2(day)} ${MONTHS_ID[monthIndex] ?? '-'} ${year}, ${pad2(hour)}:${pad2(minute)}`;
+		}
+
 		const d = parseSqlDate(date);
 		if (!d) return '-';
-		return d.toLocaleString('id-ID', { 
-			day: '2-digit', 
-			month: 'short', 
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
+		return `${pad2(d.getDate())} ${MONTHS_ID[d.getMonth()] ?? '-'} ${d.getFullYear()}, ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 	}
 </script>
 

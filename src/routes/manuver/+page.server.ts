@@ -12,8 +12,9 @@ export const load: PageServerLoad = async () => {
 			id: manuver.id,
 			sectionAsal: manuver.sectionAsal,
 			sectionTujuan: manuver.sectionTujuan,
-			waktuManuver: manuver.waktuManuver,
-			waktuPenormalan: manuver.waktuPenormalan,
+			// Keep DB wall-clock value as string to avoid timezone shifts on hydration.
+			waktuManuver: sql<string>`DATE_FORMAT(${manuver.waktuManuver}, '%Y-%m-%d %H:%i:%s')`,
+			waktuPenormalan: sql<string | null>`DATE_FORMAT(${manuver.waktuPenormalan}, '%Y-%m-%d %H:%i:%s')`,
 			bebanAmpereManuver: manuver.bebanAmpereManuver,
 			durasi: manuver.durasi,
 			status: manuver.status,
