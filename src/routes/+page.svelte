@@ -12,7 +12,6 @@
 		AlertCircle,
 		ArrowRight,
 		BarChart3,
-		History,
 		MapPin,
 		Timer,
 		ChevronRight
@@ -31,7 +30,6 @@
 	const stats = $derived(data.stats);
 	const topFeeders = $derived(data.topFeeders);
 	const activeManuvers = $derived(data.activeManuvers);
-	const normalHistory = $derived(data.normalHistory);
 
 	function formatNumber(num: number, decimals = 1) {
 		return Number(num).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
@@ -334,64 +332,8 @@
 			</section>
 		</div>
 
-		<!-- Right Column: Normal History -->
+		<!-- Right Column: Actions -->
 		<div class="space-y-6">
-			<div class="flex items-center gap-3 px-2">
-				<div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
-					<History class="w-5 h-5" />
-				</div>
-				<h2 class="text-xl font-bold text-slate-800">Riwayat Normal Terakhir</h2>
-			</div>
-
-			<div class="space-y-4">
-				{#if normalHistory.length === 0}
-					<div class="p-8 text-center border-2 border-dashed border-slate-100 rounded-3xl text-slate-400">
-						<p class="text-sm font-medium">Belum ada riwayat</p>
-					</div>
-				{:else}
-					{#each normalHistory as h}
-						<div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
-							<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500 group-hover:w-3 transition-all"></div>
-							<div class="flex justify-between items-start mb-4">
-								<div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter">
-									<CheckCircle2 class="w-3 h-3" />
-									Normal
-								</div>
-								<span class="text-[10px] font-bold text-slate-400">{formatDate(h.waktuPenormalan!)}</span>
-							</div>
-
-							<div class="flex items-center gap-3 mb-4">
-								<div class="flex-1 min-w-0">
-									<p class="text-[10px] font-bold text-slate-300 uppercase leading-none mb-1">Penyulang</p>
-									<p class="text-sm font-black text-slate-700 truncate">{h.penyulangAsal.nama} ➔ {h.penyulangTujuan.nama}</p>
-								</div>
-							</div>
-
-							<div class="flex items-center gap-4 py-3 border-t border-slate-50 mt-3">
-								<div class="flex items-center gap-1">
-									<Activity class="w-3 h-3 text-emerald-500" />
-									<span class="text-xs font-black text-slate-700">{h.bebanAmpereManuver} A</span>
-								</div>
-								<div class="w-1 h-1 rounded-full bg-slate-200"></div>
-								<div class="flex items-center gap-1">
-									<Timer class="w-3 h-3 text-slate-400" />
-									<span class="text-[10px] font-bold text-slate-400">Selesai</span>
-								</div>
-							</div>
-						</div>
-					{/each}
-				{/if}
-
-				<a 
-					href="/manuver" 
-					class="flex items-center justify-center gap-2 w-full p-4 rounded-2xl border-2 border-slate-100 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-all hover:border-[#00A2E9]/20 hover:text-[#00A2E9]"
-				>
-					Lihat Semua Riwayat
-					<ChevronRight class="w-4 h-4" />
-				</a>
-			</div>
-
-			<!-- Catat Manuver CTA -->
 			<div class="bg-gradient-to-br from-[#005B8F] to-[#4285F4] rounded-3xl p-8 shadow-xl text-white relative overflow-hidden group mt-6">
 				<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-500"></div>
 				<div class="relative z-10 space-y-4">

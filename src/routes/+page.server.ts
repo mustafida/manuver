@@ -83,23 +83,6 @@ export const load: PageServerLoad = async () => {
 		.where(eq(manuver.status, 'AKTIF'))
 		.orderBy(desc(manuver.waktuManuver));
 
-		// 8. Latest Normal History
-		const normalHistory = await db.select({
-			id: manuver.id,
-			waktuManuver: manuver.waktuManuver,
-			waktuPenormalan: manuver.waktuPenormalan,
-			bebanAmpereManuver: manuver.bebanAmpereManuver,
-			status: manuver.status,
-			penyulangAsal: { nama: p1.nama },
-			penyulangTujuan: { nama: p2.nama },
-		})
-		.from(manuver)
-		.innerJoin(p1, eq(manuver.penyulangAsalId, p1.id))
-		.innerJoin(p2, eq(manuver.penyulangTujuanId, p2.id))
-		.where(eq(manuver.status, 'NORMAL'))
-		.orderBy(desc(manuver.waktuPenormalan))
-		.limit(5);
-
 		return {
 			stats: {
 				totalPenyulang,
@@ -111,8 +94,7 @@ export const load: PageServerLoad = async () => {
 				completionRatio
 			},
 			topFeeders: feederCounts as any,
-			activeManuvers: activeManuvers as any,
-			normalHistory: normalHistory as any
+			activeManuvers: activeManuvers as any
 		};
 	} catch (error) {
 		console.error('SERVER LOAD ERROR:', error);
@@ -127,8 +109,7 @@ export const load: PageServerLoad = async () => {
 				completionRatio: 0
 			},
 			topFeeders: [],
-			activeManuvers: [],
-			normalHistory: []
+			activeManuvers: []
 		};
 	}
 };
