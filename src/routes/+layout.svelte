@@ -6,10 +6,8 @@
 		LayoutDashboard, 
 		Activity, 
 		FileEdit, 
-		LogOut, 
 		User, 
 		Zap,
-		Bell,
 		ChevronRight,
 		Database,
 		History,
@@ -94,20 +92,6 @@
 					{/if}
 				</a>
 			{/each}
-
-			<div class="pt-8 opacity-20 border-t border-white/20 mx-4"></div>
-			
-			<button 
-				onclick={() => { if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) window.location.href = '/' }}
-				class={cn(
-					"w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-white/70 hover:bg-red-500/10 hover:text-red-300 group mt-4"
-				)}
-			>
-				<LogOut class="w-5 h-5" />
-				{#if !isSidebarCollapsed}
-					<span>Logout</span>
-				{/if}
-			</button>
 		</nav>
 
 		<!-- Sidebar Footer -->
@@ -148,30 +132,6 @@
 			</div>
 
 			<div class="flex items-center gap-6">
-				<button 
-					onclick={() => alert('Semua manuver terpantau. Tidak ada notifikasi mendesak.')} 
-					class="relative p-2.5 hover:bg-slate-100 rounded-full text-slate-500 transition-all"
-					aria-label="Notifications"
-				>
-					<Bell class="w-5 h-5" />
-					<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-				</button>
-				
-				<div class="h-8 w-px bg-slate-200"></div>
-
-				<button 
-					onclick={() => alert('Pengaturan Profil Dispatcher')} 
-					class="flex items-center gap-3 group cursor-pointer border p-1 pr-3 rounded-full hover:bg-slate-50 transition-all text-left"
-					type="button"
-				>
-					<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#005B8F] to-[#00A2E9] flex items-center justify-center text-white border-2 border-white shadow-md overflow-hidden">
-						<User class="w-6 h-6" />
-					</div>
-					<div class="flex flex-col">
-						<p class="text-sm font-bold text-slate-700 leading-tight">Mustafida</p>
-						<p class="text-[11px] text-slate-400 font-medium">Dispatcher 1</p>
-					</div>
-				</button>
 			</div>
 		</header>
 		
