@@ -47,6 +47,10 @@ export const actions: Actions = {
 		const id = Number(params.id);
 		const formData = await request.formData();
 		const waktuPenormalanStr = formData.get('waktuPenormalan') as string;
+		const sectionAsalPenormalan = formData.get('sectionAsalPenormalan') as string;
+		const sectionTujuanPenormalan = formData.get('sectionTujuanPenormalan') as string;
+		const pelaksanaanAsalPenormalan = formData.get('pelaksanaanAsalPenormalan') as string;
+		const pelaksanaanTujuanPenormalan = formData.get('pelaksanaanTujuanPenormalan') as string;
 
 		let waktuPenormalan = getIndonesianDate();
 		if (waktuPenormalanStr) {
@@ -83,16 +87,20 @@ export const actions: Actions = {
 				await tx.update(manuver).set({
 					waktuPenormalan,
 					status: 'NORMAL',
-					durasi: Math.max(0, durasi)
+					durasi: Math.max(0, durasi),
+					sectionAsalPenormalan,
+					sectionTujuanPenormalan,
+					pelaksanaanAsalPenormalan,
+					pelaksanaanTujuanPenormalan
 				}).where(eq(manuver.id, id));
 
-				// 3. Restore loads atomically
+				// 3. Reset loads to Normal (baseline)
 				await tx.update(penyulang)
-					.set({ bebanSekarang: sql`${penyulang.bebanSekarang} + ${record.bebanAmpereManuver}` })
+					.set({ bebanSekarang: 0 })
 					.where(eq(penyulang.id, record.penyulangAsalId));
 
 				await tx.update(penyulang)
-					.set({ bebanSekarang: sql`${penyulang.bebanSekarang} - ${record.bebanAmpereManuver}` })
+					.set({ bebanSekarang: 0 })
 					.where(eq(penyulang.id, record.penyulangTujuanId));
 			});
 		} catch (error) {

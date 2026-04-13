@@ -45,6 +45,8 @@ export const actions: Actions = {
 		const pelaksanaanAsal = formData.get('pelaksanaanAsal')?.toString()?.trim();
 		const pelaksanaanTujuan = formData.get('pelaksanaanTujuan')?.toString()?.trim();
 		const keterangan = formData.get('keterangan')?.toString()?.trim();
+		const ulpAsal = formData.get('ulpAsal')?.toString()?.trim();
+		const ulpTujuan = formData.get('ulpTujuan')?.toString()?.trim();
 
 		// Validation according to gemini.md: "Semua field wajib"
 		if (!penyulangAsalId) return fail(400, { message: 'Penyulang Asal wajib dipilih.' });
@@ -72,11 +74,12 @@ export const actions: Actions = {
 					penyulangTujuanId,
 					sectionAsal,
 					sectionTujuan,
+					ulpAsal,
+					ulpTujuan,
 					waktuManuver,
 					waktuPenormalan,
 					bebanAmpereManuver,
 					bebanSebelum: bebanSebelum || 0,
-					bebanSesudah: null, // Initial 
 					pelaksanaanAsal,
 					pelaksanaanTujuan,
 					keterangan,
@@ -84,18 +87,19 @@ export const actions: Actions = {
 					status: waktuPenormalan ? 'NORMAL' : 'AKTIF'
 				});
 
-				// If it's AKTIF (manuver starting), adjust the penyulang loads
+				// If it's AKTIF (manuver starting), adjust the penyulang loads (Clean Delta Logic)
 				if (!waktuPenormalan) {
-					// 1. Deduct from Asal
+					// 1. Asal (Subtract from Delta)
 					await tx.execute(sql`
 						UPDATE penyulang 
-						SET beban_sekarang = beban_sekarang - ${bebanAmpereManuver} 
+						SET beban_sekarang = COALESCE(beban_sekarang, 0) - ${bebanAmpereManuver} 
 						WHERE id = ${penyulangAsalId}
 					`);
-					// 2. Add to Tujuan
+
+					// 2. Tujuan (Add to Delta)
 					await tx.execute(sql`
 						UPDATE penyulang 
-						SET beban_sekarang = beban_sekarang + ${bebanAmpereManuver} 
+						SET beban_sekarang = COALESCE(beban_sekarang, 0) + ${bebanAmpereManuver} 
 						WHERE id = ${penyulangTujuanId}
 					`);
 				}

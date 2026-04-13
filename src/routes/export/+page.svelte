@@ -48,27 +48,47 @@
 	<!-- Data Table -->
 	<div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
 		<div class="overflow-x-auto custom-scrollbar">
-			<table class="w-full text-left whitespace-nowrap min-w-max">
+			<table class="w-full text-left border-collapse min-w-max">
 				<thead>
 					<tr class="bg-[#005B8F] text-white">
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest first:rounded-tl-3xl">Penyulang Asal</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Tujuan</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban Manuver</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Sec. Asal</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Sec. Tujuan</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Manuver</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Penormalan</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Asal</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Tujuan</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Durasi</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-center">Keterangan</th>
+						<th rowspan="2" class="py-4 px-4 font-bold text-sm uppercase tracking-wider text-center border-r border-white/10 first:rounded-tl-3xl">NO</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Existing (Asal)</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Manuver Ke (Tujuan)</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Section Manuver</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Metode Eksekusi</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Beban (Ampere)</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Waktu Manuver</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Waktu Normal</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Section Normal</th>
+						<th colspan="2" class="py-2 px-4 font-bold text-sm uppercase tracking-wider text-center border-b border-r border-white/10">Metode Normal</th>
+						<th rowspan="2" class="py-4 px-4 font-bold text-sm uppercase tracking-wider text-center border-r border-white/10">Durasi (Menit)</th>
+						<th rowspan="2" class="py-4 px-4 font-bold text-sm uppercase tracking-wider text-center last:rounded-tr-3xl">Keterangan</th>
+					</tr>
+					<tr class="bg-[#0070C0] text-white">
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">ULP</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Penyulang</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">ULP</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Penyulang</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Section Asal</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Section Tujuan</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Asal</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Tujuan</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Beban Existing</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Beban Manuver</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Tanggal</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Jam</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Tanggal</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Jam</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Section Asal</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Section Tujuan</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Eksekusi Asal</th>
+						<th class="py-2 px-4 font-bold text-xs uppercase text-center border-r border-white/10">Eksekusi Tujuan</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-slate-50">
+				<tbody class="divide-y divide-slate-100 tabular-nums">
 					{#if data.listManuver.length === 0}
 						<tr>
-							<td colspan="12" class="py-20 text-center space-y-4">
+							<td colspan="20" class="py-20 text-center space-y-4">
 								<div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
 									<Database class="w-8 h-8" />
 								</div>
@@ -76,52 +96,84 @@
 							</td>
 						</tr>
 					{:else}
-						{#each data.listManuver as m}
+						{#each data.listManuver as m, index}
 							<tr class="hover:bg-slate-50 transition-colors">
-								<td class="py-4 px-6 font-black text-slate-700">{m.penyulangAsalNama}</td>
-								<td class="py-4 px-6 font-bold text-slate-600 text-center flex justify-center items-center gap-2">
-									<ArrowRight class="w-3 h-3 text-slate-300" />
+								<td class="py-4 px-4 text-center font-black text-slate-400 text-xs border-r border-slate-50">
+									{index + 1}
+								</td>
+								<td class="py-4 px-4 text-center text-xs font-bold text-slate-500 border-r border-slate-50">
+									{m.penyulangAsalUlp}
+								</td>
+								<td class="py-4 px-4 font-black text-slate-800 text-sm border-r border-slate-50">
+									{m.penyulangAsalNama}
+								</td>
+								<td class="py-4 px-4 text-center text-xs font-bold text-slate-500 border-r border-slate-50">
+									{m.penyulangTujuanUlp}
+								</td>
+								<td class="py-4 px-4 font-black text-slate-800 text-sm border-r border-slate-50">
 									{m.penyulangTujuanNama}
 								</td>
-								<td class="py-4 px-6 text-center">
-									<span class={cn(
-										"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
-										m.status === 'AKTIF' 
-											? "bg-red-50 text-red-600 ring-1 ring-red-100" 
-											: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100"
-									)}>
-										{#if m.status === 'AKTIF'}
-											<Activity class="w-3 h-3" /> Aktif
-										{:else}
-											<CheckCircle2 class="w-3 h-3" /> Normal
-										{/if}
-									</span>
+								
+								<td class="py-4 px-4 text-center text-xs font-bold text-indigo-600 bg-indigo-50/30 border-r border-slate-50 uppercase">
+									{m.sectionAsal || '-'}
 								</td>
-								<td class="py-4 px-6 text-right font-black text-slate-800">{m.bebanAmpereManuver} A</td>
-								<td class="py-4 px-6 text-center text-[10px] font-black">
-									<span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-100">{m.sectionAsal || '-'}</span>
+								<td class="py-4 px-4 text-center text-xs font-bold text-amber-600 bg-amber-50/30 border-r border-slate-50 uppercase">
+									{m.sectionTujuan || '-'}
 								</td>
-								<td class="py-4 px-6 text-center text-[10px] font-black">
-									<span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">{m.sectionTujuan || '-'}</span>
+
+								<td class="py-4 px-4 text-center text-xs font-bold text-indigo-600 border-r border-slate-50 uppercase">
+									{m.pelaksanaanAsal || '-'}
 								</td>
-								<td class="py-4 px-6 text-center text-sm font-bold text-slate-700">{m.waktuManuverStr}</td>
-								<td class="py-4 px-6 text-center text-sm font-bold text-emerald-600">{m.waktuPenormalanStr || '-'}</td>
-								<td class="py-4 px-6 text-center">
-									<span class="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 uppercase">{m.pelaksanaanAsal || '-'}</span>
+								<td class="py-4 px-4 text-center text-xs font-bold text-amber-600 border-r border-slate-50 uppercase">
+									{m.pelaksanaanTujuan || '-'}
 								</td>
-								<td class="py-4 px-6 text-center">
-									<span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100 uppercase">{m.pelaksanaanTujuan || '-'}</span>
+
+								<td class="py-4 px-4 text-right font-bold text-slate-700 text-sm border-r border-slate-50 tabular-nums">
+									{m.bebanSebelum}
 								</td>
-								<td class="py-4 px-6 text-center">
+								<td class="py-4 px-4 text-right font-black text-blue-600 text-sm border-r border-slate-50 tabular-nums">
+									{m.bebanAmpereManuver}
+								</td>
+
+								<td class="py-4 px-4 text-center text-xs font-bold text-slate-600 border-r border-slate-50">
+									{m.waktuManuverTanggal}
+								</td>
+								<td class="py-4 px-4 text-center text-xs font-bold text-slate-600 border-r border-slate-50">
+									{m.waktuManuverJam}
+								</td>
+
+								<td class="py-4 px-4 text-center text-xs font-bold text-emerald-600 border-r border-slate-50">
+									{m.waktuPenormalanTanggal || '-'}
+								</td>
+								<td class="py-4 px-4 text-center text-xs font-bold text-emerald-600 border-r border-slate-50">
+									{m.waktuPenormalanJam || '-'}
+								</td>
+
+								<td class="py-4 px-4 text-center text-xs font-bold text-emerald-600 bg-emerald-50/30 border-r border-slate-50 uppercase">
+									{m.sectionAsalPenormalan || '-'}
+								</td>
+								<td class="py-4 px-4 text-center text-xs font-bold text-teal-600 bg-teal-50/30 border-r border-slate-50 uppercase">
+									{m.sectionTujuanPenormalan || '-'}
+								</td>
+
+								<td class="py-4 px-4 text-center text-xs font-bold text-emerald-600 border-r border-slate-50 uppercase">
+									{m.pelaksanaanAsalPenormalan || '-'}
+								</td>
+								<td class="py-4 px-4 text-center text-xs font-bold text-teal-600 border-r border-slate-50 uppercase">
+									{m.pelaksanaanTujuanPenormalan || '-'}
+								</td>
+
+								<td class="py-4 px-4 text-center border-r border-slate-50">
 									{#if m.durasi !== null && m.durasi !== undefined}
-										<span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter border border-blue-100">
-											{m.durasi} MENIT
-										</span>
+										<span class="font-bold text-slate-800 text-sm">{m.durasi}m</span>
 									{:else}
-										<span class="text-slate-300 text-[10px] font-black italic">PROSES</span>
+										<span class="text-orange-500 text-xs font-black italic">AKTIF</span>
 									{/if}
 								</td>
-								<td class="py-4 px-6 text-center text-xs text-slate-500 max-w-[200px] truncate" title={m.keterangan || ''}>{m.keterangan || '-'}</td>
+
+								<td class="py-4 px-4 text-sm text-slate-600 max-w-[200px] truncate" title={m.keterangan}>
+									{m.keterangan || '-'}
+								</td>
 							</tr>
 						{/each}
 					{/if}

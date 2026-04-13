@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import { drizzle } from 'drizzle-orm/mysql2';
 import * as schema from '../src/lib/server/db/schema';
@@ -34,7 +35,7 @@ const loadData = [
     { name: "KETAPANG", siang: 165, malam: 263 },
     { name: "PAYUDAN", siang: 155, malam: 187 },
     { name: "TORJUN", siang: 147, malam: 218 },
-    { name: "PROPO", siang: 75, malam: 111 },
+    { name: "PROPPO", siang: 75, malam: 111 },
     { name: "GAZALI", siang: 189, malam: 234 },
     { name: "CANDI BURUNG", siang: 93, malam: 122 },
     { name: "SUMEDANGAN", siang: 157, malam: 196 },
@@ -67,7 +68,8 @@ const loadData = [
 ];
 
 async function main() {
-    const DATABASE_URL = "mysql://root@localhost:3306/manuver";
+    const DATABASE_URL = process.env.DATABASE_URL;
+    if (!DATABASE_URL) throw new Error('DATABASE_URL is not set');
     const client = mysql.createPool(DATABASE_URL);
     const db = drizzle(client, { schema, mode: 'default' });
 
@@ -84,7 +86,7 @@ async function main() {
 
     // Set initial bebanSekarang based on current time
     const hour = new Date().getHours();
-    const isSiang = hour >= 7 && hour < 16;
+    const isSiang = hour >= 10 && hour < 19;
     
     await db.execute(sql`
         UPDATE penyulang 

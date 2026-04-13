@@ -27,18 +27,15 @@
 	let { data }: { data: PageData } = $props();
 
 	let searchQuery = $state('');
-	let filterStatus = $state('ALL'); // ALL, AKTIF, NORMAL
+	let filterStatus = $state('All');
 
-	const filteredManuvers = $derived(
-		data.listManuver.filter(m => {
-			const matchesSearch = 
-				m.penyulangAsalNama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				m.penyulangTujuanNama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				m.penyulangAsalUlp.toLowerCase().includes(searchQuery.toLowerCase());
-			
-			const matchesFilter = filterStatus === 'ALL' || m.status === filterStatus;
-			
-			return matchesSearch && matchesFilter;
+	let filteredManuvers = $derived(
+		data.listManuver.filter((m) => {
+			const matchesSearch =
+				(m.penyulangAsalNama?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+				(m.penyulangTujuanNama?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+			const matchesStatus = filterStatus === 'All' || m.status === filterStatus;
+			return matchesSearch && matchesStatus;
 		})
 	);
 </script>
@@ -61,189 +58,254 @@
 
 	<!-- Statistics Cards -->
 	<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-		<div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-6">
-			<div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#00A2E9]">
-				<Database class="w-7 h-7" />
+		<div class="group bg-gradient-to-br from-white to-slate-50 p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-6 transition-all hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1">
+			<div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-[#00A2E9] shadow-inner">
+				<Database class="w-8 h-8" />
 			</div>
 			<div>
-				<p class="text-slate-400 text-xs font-bold uppercase tracking-widest leading-none mb-1">Total Record</p>
-				<h3 class="text-3xl font-black text-slate-800">{data.stats.total}</h3>
+				<p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-2">Total Record</p>
+				<h3 class="text-4xl font-black text-slate-800 tracking-tighter">{data.stats.total}</h3>
 			</div>
 		</div>
 
-		<div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-6 border-l-4 border-l-red-500">
-			<div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center text-red-500">
-				<Activity class="w-7 h-7 animate-pulse" />
+		<div class="group bg-gradient-to-br from-white to-red-50/30 p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-6 border-l-8 border-l-red-500 transition-all hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1">
+			<div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center text-red-500 shadow-inner">
+				<Activity class="w-8 h-8 animate-pulse" />
 			</div>
 			<div>
-				<p class="text-slate-400 text-xs font-bold uppercase tracking-widest leading-none mb-1">Sedang Manuver</p>
-				<h3 class="text-3xl font-black text-red-600">{data.stats.active}</h3>
+				<p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-2">Sedang Manuver</p>
+				<h3 class="text-4xl font-black text-red-600 tracking-tighter">{data.stats.active}</h3>
 			</div>
 		</div>
 
-		<div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-6 border-l-4 border-l-emerald-500">
-			<div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500">
-				<CheckCircle2 class="w-7 h-7" />
+		<div class="group bg-gradient-to-br from-white to-emerald-50/30 p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-6 border-l-8 border-l-emerald-500 transition-all hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1">
+			<div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 shadow-inner">
+				<CheckCircle2 class="w-8 h-8" />
 			</div>
 			<div>
-				<p class="text-slate-400 text-xs font-bold uppercase tracking-widest leading-none mb-1">Sudah Normal</p>
-				<h3 class="text-3xl font-black text-emerald-600">{data.stats.normal}</h3>
+				<p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-2">Sudah Normal</p>
+				<h3 class="text-4xl font-black text-emerald-600 tracking-tighter">{data.stats.normal}</h3>
 			</div>
 		</div>
 	</div>
 
 	<!-- Filter & Search Bar -->
-	<div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4">
-		<div class="flex-1 relative">
-			<div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+	<div class="bg-white/80 backdrop-blur-xl p-3 rounded-3xl shadow-2xl shadow-slate-200/50 border border-white flex flex-col md:flex-row gap-3">
+		<div class="flex-1 relative group">
+			<div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#00A2E9]">
 				<Search class="w-5 h-5" />
 			</div>
 			<input 
 				type="text" 
 				placeholder="Cari Penyulang atau ULP..." 
 				bind:value={searchQuery}
-				class="w-full pl-12 pr-4 py-3 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-medium text-slate-700"
+				class="w-full pl-14 pr-6 py-4 bg-slate-100/50 border-2 border-transparent rounded-[1.25rem] focus:bg-white focus:border-[#00A2E9]/30 focus:ring-8 focus:ring-[#00A2E9]/5 transition-all font-bold text-slate-700 placeholder:text-slate-400"
 			/>
 		</div>
 
 		<div class="flex gap-2">
-			<select 
-				bind:value={filterStatus}
-				class="bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-600 text-sm appearance-none min-w-[140px]"
-			>
-				<option value="ALL">Semua Status</option>
-				<option value="AKTIF">Sedang Manuver</option>
-				<option value="NORMAL">Normal</option>
-			</select>
+			<div class="relative min-w-[200px]">
+				<div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+					<Filter class="w-4 h-4" />
+				</div>
+				<select 
+					bind:value={filterStatus}
+					class="w-full pl-11 pr-10 py-4 bg-slate-100/50 border-2 border-transparent rounded-[1.25rem] focus:bg-white focus:border-[#00A2E9]/30 transition-all font-black text-slate-600 text-xs uppercase tracking-widest appearance-none cursor-pointer"
+				>
+					<option value="All">Semua Status</option>
+					<option value="AKTIF">Sedang Manuver</option>
+					<option value="NORMAL">Normal</option>
+				</select>
+				<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+					<MoreVertical class="w-4 h-4" />
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<!-- Data Table -->
-	<div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
-		<div class="overflow-x-auto">
-			<table class="w-full text-left">
-				<thead>
-					<tr class="bg-[#005B8F] text-white">
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest first:rounded-tl-3xl">Penyulang (Asal ➔ Tujuan)</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban (Ampere)</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Waktu (Log)</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Asal</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Tujuan</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Durasi</th>
-						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-right">Aksi</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y divide-slate-50">
-					{#if filteredManuvers.length === 0}
-						<tr>
-							<td colspan="8" class="py-20 text-center space-y-4">
-								<div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
-									<Database class="w-8 h-8" />
+	<!-- Premium Dashboard Body -->
+	<div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden relative">
+		<!-- Category Header Bar (PLN Blue) -->
+		<div class="bg-[#005B8F] text-white py-4 px-10 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] sticky top-0 z-30">
+			<div class="w-[30%]">Penyulang (Asal &rarr; Tujuan)</div>
+			<div class="w-[8%] text-center">Status</div>
+			<div class="w-[18%] text-center bg-white/10 py-1 rounded-lg">Detail Manuver</div>
+			<div class="w-[16%] text-center bg-white/10 py-1 rounded-lg">Detail Normal</div>
+			<div class="w-[8%] text-center">Beban</div>
+			<div class="w-[10%] text-center">Waktu Log</div>
+			<div class="w-[5%] text-center">Durasi</div>
+			<div class="w-[5%] text-right">Aksi</div>
+		</div>
+
+		<div class="divide-y divide-slate-100 italic-last-row">
+			{#if filteredManuvers.length === 0}
+				<div class="py-24 text-center space-y-4">
+					<div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-200">
+						<Database class="w-10 h-10" />
+					</div>
+					<p class="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">Data tidak ditemukan</p>
+				</div>
+			{:else}
+				{#each filteredManuvers as m, index}
+					<div class="hover:bg-slate-50/50 transition-all group flex items-center px-10 py-6 gap-4 relative">
+						<!-- Progress Line (Left) -->
+						<div class={cn(
+							"absolute left-0 top-0 bottom-0 w-1.5 transition-all",
+							m.status === 'AKTIF' ? "bg-red-500 animate-pulse" : "bg-emerald-500"
+						)}></div>
+
+						<!-- 1. Feeder Block -->
+						<div class="w-[30%] flex flex-col gap-1">
+							<div class="flex items-center gap-3">
+								<div class="flex flex-col min-w-0">
+									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{m.penyulangAsalUlp}</span>
+									<span class="text-base font-black text-slate-800 leading-tight">{m.penyulangAsalNama}</span>
 								</div>
-								<p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Tidak ada data penyulang</p>
-							</td>
-						</tr>
-					{:else}
-						{#each filteredManuvers as m}
-							<tr class="hover:bg-slate-50/80 transition-colors group border-l-4 border-l-transparent hover:border-l-[#00A2E9]">
-								<td class="py-5 px-6">
-									<div class="flex items-center gap-3">
-										<div class={cn(
-											"w-2 h-2 rounded-full",
-											m.status === 'AKTIF' ? "bg-red-500 animate-pulse" : "bg-emerald-500"
-										)}></div>
-										<div class="flex flex-col">
-											<div class="flex items-center gap-2">
-												<span class="font-black text-slate-800">{m.penyulangAsalNama}</span>
-												<ArrowRight class="w-3 h-3 text-slate-300" />
-												<span class="font-bold text-slate-600">{m.penyulangTujuanNama}</span>
-											</div>
-											<div class="mt-1 flex gap-2">
-												{#if m.sectionAsal}
-													<span class="text-[9px] font-bold text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">Sec.Asal: {m.sectionAsal}</span>
-												{/if}
-												{#if m.sectionTujuan}
-													<span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">Sec.Tuju: {m.sectionTujuan}</span>
-												{/if}
-											</div>
+								<ArrowRight class="w-4 h-4 text-slate-300 flex-shrink-0" />
+								<div class="flex flex-col min-w-0">
+									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{m.penyulangTujuanUlp}</span>
+									<span class="text-base font-black text-slate-800 leading-tight">{m.penyulangTujuanNama}</span>
+								</div>
+							</div>
+							<div class="text-[9px] font-bold text-slate-400 italic">
+								{m.keterangan || '-'}
+							</div>
+						</div>
+
+						<!-- 2. Status Badge -->
+						<div class="w-[8%] flex justify-center">
+							{#if m.status === 'AKTIF'}
+								<div class="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-full border border-red-100 flex items-center gap-1.5 shadow-sm">
+									<div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></div>
+									<span class="text-[8px] font-black uppercase tracking-widest">Aktif</span>
+								</div>
+							{:else}
+								<div class="px-2.5 py-1.5 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 flex items-center gap-1.5 shadow-sm">
+									<CheckCircle2 class="w-3 h-3" />
+									<span class="text-[8px] font-black uppercase tracking-widest">Normal</span>
+								</div>
+							{/if}
+						</div>
+
+						<!-- 3. Maneuver Cluster -->
+						<div class="w-[18%] bg-indigo-50/20 rounded-2xl p-3 border border-indigo-100/50 flex flex-col gap-2">
+							<div class="flex items-center justify-between gap-2 overflow-hidden">
+								<div class="flex items-center gap-1.5 overflow-hidden">
+									<span class="text-[7px] font-black text-indigo-400 bg-white px-1 rounded border border-indigo-100 flex-shrink-0">ASAL</span>
+									<span class="text-[10px] font-black text-indigo-900 truncate">{m.sectionAsal || '-'}</span>
+								</div>
+								<div class="px-1.5 py-0.5 bg-indigo-600 text-white rounded text-[8px] font-bold uppercase whitespace-nowrap">
+									{m.pelaksanaanAsal || '-'}
+								</div>
+							</div>
+							<div class="h-[1px] bg-indigo-100/50"></div>
+							<div class="flex items-center justify-between gap-2 overflow-hidden">
+								<div class="flex items-center gap-1.5 overflow-hidden">
+									<span class="text-[7px] font-black text-amber-500 bg-white px-1 rounded border border-amber-100 flex-shrink-0">TUJU</span>
+									<span class="text-[10px] font-black text-amber-900 truncate">{m.sectionTujuan || '-'}</span>
+								</div>
+								<div class="px-1.5 py-0.5 bg-amber-500 text-white rounded text-[8px] font-bold uppercase whitespace-nowrap">
+									{m.pelaksanaanTujuan || '-'}
+								</div>
+							</div>
+						</div>
+
+						<!-- 4. Normal Cluster -->
+						<div class="w-[16%] px-2">
+							{#if m.status === 'NORMAL'}
+								<div class="bg-emerald-50/20 rounded-2xl p-3 border border-emerald-100/50 flex flex-col gap-2">
+									<div class="flex items-center justify-between gap-2 overflow-hidden">
+										<div class="flex items-center gap-1.5 overflow-hidden">
+											<span class="text-[7px] font-black text-emerald-500 bg-white px-1 rounded border border-emerald-100 flex-shrink-0">SEC-A</span>
+											<span class="text-[10px] font-black text-emerald-900 truncate">{m.sectionAsalPenormalan || '-'}</span>
+										</div>
+										<div class="px-1.5 py-0.5 bg-emerald-600 text-white rounded text-[8px] font-bold uppercase whitespace-nowrap">
+											{m.pelaksanaanAsalPenormalan || '-'}
 										</div>
 									</div>
-								</td>
+									<div class="h-[1px] bg-emerald-100/50"></div>
+									<div class="flex items-center justify-between gap-2 overflow-hidden">
+										<div class="flex items-center gap-1.5 overflow-hidden">
+											<span class="text-[7px] font-black text-teal-500 bg-white px-1 rounded border border-teal-100 flex-shrink-0">SEC-T</span>
+											<span class="text-[10px] font-black text-teal-900 truncate">{m.sectionTujuanPenormalan || '-'}</span>
+										</div>
+										<div class="px-1.5 py-0.5 bg-teal-600 text-white rounded text-[8px] font-bold uppercase whitespace-nowrap">
+											{m.pelaksanaanTujuanPenormalan || '-'}
+										</div>
+									</div>
+								</div>
+							{:else}
+								<div class="h-full flex items-center justify-center">
+									<span class="text-[9px] font-black text-slate-200 tracking-[0.2em] uppercase italic">Menunggu</span>
+								</div>
+							{/if}
+						</div>
 
-								<td class="py-5 px-6 text-center">
-									<span class={cn(
-										"inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
-										m.status === 'AKTIF' 
-											? "bg-red-50 text-red-600 ring-1 ring-red-100" 
-											: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100"
-									)}>
-										{#if m.status === 'AKTIF'}
-											<Activity class="w-3 h-3" />
-											SEDANG MANUVER
-										{:else}
-											<CheckCircle2 class="w-3 h-3" />
-											NORMAL
-										{/if}
-									</span>
-								</td>
-								<td class="py-5 px-6 text-right">
-									<span class="font-black text-slate-800 tabular-nums">{m.bebanAmpereManuver}</span>
-									<span class="text-[10px] font-bold text-slate-400 ml-1">A</span>
-								</td>
-								<td class="py-5 px-6 text-right">
-									<div class="flex flex-col items-end">
-										<span class="text-xs font-black text-slate-700 leading-none mb-1">{m.waktuManuverStr}</span>
-										{#if m.status === 'NORMAL'}
-											<span class="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter flex items-center gap-1">
-												<CheckCircle2 class="w-2.5 h-2.5" />
-												Selesai: {m.waktuPenormalanStr}
-											</span>
-										{/if}
-									</div>
-								</td>
-								<td class="py-5 px-6 text-center">
-									<span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase">{m.pelaksanaanAsal || '-'}</span>
-								</td>
-								<td class="py-5 px-6 text-center">
-									<span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100 uppercase">{m.pelaksanaanTujuan || '-'}</span>
-								</td>
-								<td class="py-5 px-6 text-right">
-									{#if m.durasi !== null && m.durasi !== undefined}
-										<span class="font-black text-slate-800 tabular-nums">{m.durasi}</span>
-										<span class="text-[9px] font-bold text-slate-400 ml-1">MENIT</span>
-									{:else}
-										<span class="text-slate-300 text-[10px] font-black italic">PROSES</span>
-									{/if}
-								</td>
-								<td class="py-5 px-6 text-right">
-									<div class="flex items-center justify-end gap-2">
-										{#if m.status === 'AKTIF'}
-											<a 
-												href="/manuver/{m.id}/penormalan"
-												class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all text-[9px] uppercase flex items-center gap-1"
-											>
-												<CheckCircle2 class="w-3 h-3" />
-												Normalkan
-											</a>
-										{/if}
-										<form action="?/delete" method="POST" use:enhance>
-											<input type="hidden" name="id" value={m.id}>
-											<button 
-												type="submit" 
-												class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-												onclick={(e) => { if(!confirm('Yakin ingin menghapus data manuver ini?')) e.preventDefault(); }}
-											>
-												<Trash2 class="w-4 h-4" />
-											</button>
-										</form>
-									</div>
-								</td>
-							</tr>
-						{/each}
-					{/if}
-				</tbody>
-			</table>
+						<!-- 5. Beban -->
+						<div class="w-[8%] flex flex-col items-center justify-center">
+							<div class="flex items-baseline gap-1">
+								<span class="text-xl font-black text-slate-700 tabular-nums leading-none">{m.bebanAmpereManuver}</span>
+								<span class="text-[9px] font-black text-slate-300">A</span>
+							</div>
+							<span class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">Ampere</span>
+						</div>
+
+						<!-- 6. Waktu Log -->
+						<div class="w-[10%] flex flex-col items-center justify-center text-center gap-1.5 border-l border-slate-50 px-2">
+							<!-- Start Phase (Manuver) -->
+							<div class="flex flex-col items-center leading-none">
+								<span class="text-[11px] font-black text-slate-700">{m.waktuManuverJam}</span>
+								<span class="text-[7.5px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">{m.waktuManuverTanggal}</span>
+							</div>
+
+							{#if m.status === 'NORMAL'}
+								<div class="flex flex-col items-center leading-none pt-1.5 border-t border-slate-100 w-full mt-0.5">
+									<span class="text-[11px] font-black text-emerald-600">{m.waktuPenormalanJam}</span>
+									<span class="text-[7.5px] font-black text-emerald-500 uppercase tracking-tighter mt-0.5">{m.waktuPenormalanTanggal}</span>
+								</div>
+							{:else}
+								<div class="flex flex-col items-center opacity-20">
+									<ArrowRight class="w-2 h-2 rotate-90" />
+									<span class="text-[7.5px] font-black uppercase tracking-widest text-slate-300 italic">Antri</span>
+								</div>
+							{/if}
+						</div>
+
+						<!-- 7. Durasi -->
+						<div class="w-[5%] flex flex-col items-center justify-center border-l border-slate-50">
+							{#if m.status === 'NORMAL'}
+								<span class="text-lg font-black text-slate-800 leading-none">{m.durasi}</span>
+								<span class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">Mnt</span>
+							{:else}
+								<span class="text-[8.5px] font-black text-red-300 italic uppercase">Log</span>
+							{/if}
+						</div>
+
+						<!-- 8. Aksi -->
+						<div class="w-[5%] flex items-center justify-end gap-2 px-2">
+							{#if m.status === 'AKTIF'}
+								<a 
+									href="/manuver/{m.id}/penormalan"
+									class="bg-[#00A2E9] hover:bg-[#0070C0] text-white p-2.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all group/btn"
+									title="Normalkan"
+								>
+									<CheckCircle2 class="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+								</a>
+							{/if}
+							<form action="?/delete" method="POST" use:enhance>
+								<input type="hidden" name="id" value={m.id}>
+								<button 
+									type="submit" 
+									class="p-1.5 text-slate-200 hover:text-red-500 transition-all rounded-lg"
+									onclick={(e) => { if(!confirm('Yakin ingin menghapus data manuver ini?')) e.preventDefault(); }}
+								>
+									<Trash2 class="w-3.5 h-3.5" />
+								</button>
+							</form>
+						</div>
+					</div>
+				{/each}
+			{/if}
 		</div>
 
 		<!-- Footer / Pagination -->
@@ -268,12 +330,38 @@
 </div>
 
 <style>
+	.custom-scrollbar::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	.custom-scrollbar::-webkit-scrollbar-track {
+		background: #f8fafc;
+		border-radius: 10px;
+	}
+	.custom-scrollbar::-webkit-scrollbar-thumb {
+		background: #e2e8f0;
+		border-radius: 10px;
+		transition: all 0.3s;
+	}
+	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+		background: #00A2E9;
+	}
+	
 	:global(.animate-in) {
-		animation: fadeIn 0.5s ease-out forwards;
+		animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	}
+	
+	.slide-in {
+		animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 	}
 
 	@keyframes fadeIn {
-		from { opacity: 0; transform: translateY(10px); }
+		from { opacity: 0; transform: translateY(20px); }
 		to { opacity: 1; transform: translateY(0); }
+	}
+
+	@keyframes slideIn {
+		from { opacity: 0; transform: translateX(-20px); }
+		to { opacity: 1; transform: translateX(0); }
 	}
 </style>

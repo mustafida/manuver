@@ -19,7 +19,7 @@
 
 	let activeTab = $state<'gi' | 'penyulang'>('gi');
 
-	// Current load type based on time: Siang (10-19), Malam (19-10)
+	// Current load type based on time: Siang (07:00-16:00), Malam (16:00-07:00)
 	function getCurrentLoadType() {
 		const hour = new Date().getHours();
 		if (hour >= 7 && hour < 16) return 'siang';
@@ -143,6 +143,8 @@
 						{:else}
 							{#each data.listPenyulang as p}
 								{@const baseLoad = loadType === 'siang' ? p.bebanSiang : p.bebanMalam}
+								{@const delta = Number(p.bebanSekarang || 0)}
+								{@const displayVal = Math.round((baseLoad || 0) + delta)}
 								<tr class="hover:bg-slate-50 transition-colors group">
 									<td class="py-4 px-6">
 										<span class="text-slate-300 font-bold text-xs">#{p.id}</span>
@@ -156,23 +158,23 @@
 									<td class="py-4 px-6 text-center group-hover:bg-slate-50/50">
 										<div class={cn(
 											"inline-flex flex-col items-center px-4 py-2 rounded-2xl transition-all border shadow-sm min-w-[120px]",
-											p.isSource ? "bg-red-50 text-red-600 border-red-200 animate-pulse shadow-red-100" : 
-											p.isTarget ? "bg-orange-50 text-orange-600 border-orange-200 shadow-orange-100" :
+											delta < 0 ? "bg-red-50 text-red-600 border-red-200 animate-pulse shadow-red-100" : 
+											delta > 0 ? "bg-orange-50 text-orange-600 border-orange-200 shadow-orange-100" :
 											"bg-slate-50 text-slate-900 border-slate-200 shadow-slate-100"
 										)}>
 											<div class="flex items-center gap-1.5 mb-1">
 												<span class="text-[9px] font-black uppercase tracking-widest opacity-60">Status:</span>
 												<span class="text-[9px] font-black uppercase tracking-widest">
-													{p.isSource ? 'MA-NUVER' : p.isTarget ? 'MEMIKUL' : 'NORMAL'}
+													{delta < 0 ? 'MA-NUVER' : delta > 0 ? 'MEMIKUL' : 'NORMAL'}
 												</span>
 											</div>
 											<div class="flex items-baseline gap-1">
-												<span class="text-lg font-black tabular-nums">{p.bebanSekarang}</span>
+												<span class="text-lg font-black tabular-nums">{displayVal}</span>
 												<span class="text-[10px] font-bold opacity-60">AMPERE</span>
 											</div>
 											<div class="mt-1.5 pt-1.5 border-t border-current/10 w-full flex justify-between gap-4 text-[9px] font-bold uppercase tracking-tighter opacity-70">
-												<span class={cn(loadType === 'siang' && "text-blue-600")}>Siang: {p.bebanSiang}A</span>
-												<span class={cn(loadType === 'malam' && "text-blue-600")}>Malam: {p.bebanMalam}A</span>
+												<span class={cn(loadType === 'siang' && "text-blue-600")}>Siang: {Math.round(p.bebanSiang)}</span>
+												<span class={cn(loadType === 'malam' && "text-blue-600")}>Malam: {Math.round(p.bebanMalam)}</span>
 											</div>
 										</div>
 									</td>

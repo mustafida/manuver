@@ -46,6 +46,38 @@
 		</div>
 
 		<form method="POST" use:enhance class="space-y-6">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div>
+					<label for="sectionAsalPenormalan" class="block text-sm font-medium text-slate-600 mb-1">Section Asal (Penormalan) <span class="text-rose-500">*</span></label>
+					<input type="text" id="sectionAsalPenormalan" name="sectionAsalPenormalan" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition" placeholder="Contoh: REC-X">
+				</div>
+				<div>
+					<label for="sectionTujuanPenormalan" class="block text-sm font-medium text-slate-600 mb-1">Section Tujuan (Penormalan) <span class="text-rose-500">*</span></label>
+					<input type="text" id="sectionTujuanPenormalan" name="sectionTujuanPenormalan" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition" placeholder="Contoh: LBS-Y">
+				</div>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div>
+					<label for="pelaksanaanAsalPenormalan" class="block text-sm font-medium text-slate-600 mb-1">Metode Eksekusi Asal <span class="text-rose-500">*</span></label>
+					<select id="pelaksanaanAsalPenormalan" name="pelaksanaanAsalPenormalan" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition">
+						<option value="" disabled selected>Pilih Metode</option>
+						<option value="Remote SCADA">Remote SCADA</option>
+						<option value="Manual Panel">Manual Panel</option>
+						<option value="Manual Stick">Manual Stick</option>
+					</select>
+				</div>
+				<div>
+					<label for="pelaksanaanTujuanPenormalan" class="block text-sm font-medium text-slate-600 mb-1">Metode Eksekusi Tujuan <span class="text-rose-500">*</span></label>
+					<select id="pelaksanaanTujuanPenormalan" name="pelaksanaanTujuanPenormalan" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition">
+						<option value="" disabled selected>Pilih Metode</option>
+						<option value="Remote SCADA">Remote SCADA</option>
+						<option value="Manual Panel">Manual Panel</option>
+						<option value="Manual Stick">Manual Stick</option>
+					</select>
+				</div>
+			</div>
+
 			<div>
 				<label for="waktuPenormalan" class="block text-sm font-medium text-slate-600 mb-1">Dinyatakan Normal Pada <span class="text-rose-500">*</span></label>
 				<input type="datetime-local" id="waktuPenormalan" name="waktuPenormalan" required value={getNowStr()} class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition">

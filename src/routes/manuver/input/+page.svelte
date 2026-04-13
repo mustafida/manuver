@@ -70,13 +70,25 @@
 	let bebanSebelum = $state<number | string>("");
 	let submitting = $state(false);
 
-	// Auto-fill beban based on time and selected penyulang
+	// Unified Day/Night logic (Siang: 07:00 - 16:00)
+	const loadType = $derived.by(() => {
+		if (!waktuManuver) return 'MALAM';
+		const parts = waktuManuver.split('T');
+		if (parts.length < 2) return 'MALAM';
+		const hour = parseInt(parts[1].split(':')[0], 10);
+		return (hour >= 7 && hour < 16) ? 'SIANG' : 'MALAM';
+	});
+
+	const suggestedBeban = $derived(
+		selectedPenyulangAsal 
+			? (loadType === 'SIANG' ? (selectedPenyulangAsal.bebanSiang || 0) : (selectedPenyulangAsal.bebanMalam || 0))
+			: null
+	);
+
+	// Auto-fill effect: strictly follows the suggested load
 	$effect(() => {
-		if (selectedPenyulangAsal && waktuManuver) {
-			const hour = new Date(waktuManuver).getHours();
-			// Siang: 07:00 - 16:00 Local
-			const isSiang = hour >= 7 && hour < 16;
-			bebanSebelum = isSiang ? (selectedPenyulangAsal.bebanSiang || 0) : (selectedPenyulangAsal.bebanMalam || 0);
+		if (suggestedBeban !== null) {
+			bebanSebelum = suggestedBeban;
 		}
 	});
 </script>
@@ -139,6 +151,10 @@
 					<div class="flex items-center gap-2 mb-2">
 						<Layers class="w-5 h-5 text-indigo-500" />
 						<h4 class="font-black text-indigo-600 uppercase tracking-widest">1. Data Lokasi</h4>
+						
+						<!-- Hidden inputs for specific ULP tracking -->
+						<input type="hidden" name="ulpAsal" value={selectedULPAsal} />
+						<input type="hidden" name="ulpTujuan" value={selectedULPTujuan} />
 					</div>
 
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -251,7 +267,17 @@
 					</div>
 					
 					<div class="space-y-2">
-						<label for="bebanSebelum" class="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Beban Existing</label>
+						<div class="flex items-center justify-between pl-1">
+							<label for="bebanSebelum" class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Beban Existing</label>
+							{#if selectedPenyulangAsal && waktuManuver}
+								<span class={cn(
+									"text-[8px] font-black px-2 py-0.5 rounded-full border transition-all duration-300",
+									loadType === 'SIANG' ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-indigo-50 text-indigo-600 border-indigo-100"
+								)}>
+									MODE: {loadType} ({loadType === 'SIANG' ? '07-16' : '16-07'})
+								</span>
+							{/if}
+						</div>
 						<div class="relative">
 							<input type="number" step="0.01" min="0" required id="bebanSebelum" name="bebanSebelum" bind:value={bebanSebelum} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
 							<span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-[10px]">AMPERE</span>

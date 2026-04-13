@@ -53,12 +53,12 @@
 			</div>
 
 			<div>
-				<label for="bebanSiang" class="block text-sm font-medium text-slate-600 mb-1">Beban Siang (10.00 - 19.00) *Ampere</label>
+				<label for="bebanSiang" class="block text-sm font-medium text-slate-600 mb-1">Beban Siang (07.00 - 16.00) *Ampere</label>
 				<input type="number" step="0.01" min="0" id="bebanSiang" name="bebanSiang" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="0.00">
 			</div>
 
 			<div>
-				<label for="bebanMalam" class="block text-sm font-medium text-slate-600 mb-1">Beban Malam (19.00 - 10.00) *Ampere</label>
+				<label for="bebanMalam" class="block text-sm font-medium text-slate-600 mb-1">Beban Malam (16.00 - 07.00) *Ampere</label>
 				<input type="number" step="0.01" min="0" id="bebanMalam" name="bebanMalam" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#0089C5] border-2 focus:ring focus:ring-[#0089C5]/20 transition font-bold" placeholder="0.00">
 			</div>
 
@@ -91,7 +91,9 @@
 					{/if}
 					{#each data.listPenyulang as row}
 						{@const hour = new Date().getHours()}
-						{@const currentBase = (hour >= 10 && hour < 19) ? row.bebanSiang : row.bebanMalam}
+						{@const currentBase = (hour >= 7 && hour < 16) ? row.bebanSiang : row.bebanMalam}
+						{@const delta = Number(row.bebanSekarang || 0)}
+						{@const displayBeban = Math.round(Number(currentBase) + delta)}
 					<tr class="border-b border-slate-50 hover:bg-slate-50 transition">
 						<td class="py-3 px-6 font-medium text-slate-800">{row.nama}</td>
 						<td class="py-3 px-6 text-slate-600">
@@ -111,12 +113,12 @@
 						</td>
 						<td class="py-3 px-6 text-center">
 							<div class={cn(
-								"inline-flex flex-col items-center px-3 py-1 rounded-lg border",
-								(row.bebanSekarang || 0) < currentBase ? 'bg-red-50 text-red-600 border-red-100 animate-pulse' : 
-								(row.bebanSekarang || 0) > currentBase ? 'bg-orange-50 text-orange-600 border-orange-100' :
+								"inline-flex flex-col items-center px-3 py-1 rounded-lg border transition-all duration-300",
+								delta < 0 ? 'bg-red-50 text-red-600 border-red-100 animate-pulse' : 
+								delta > 0 ? 'bg-orange-50 text-orange-600 border-orange-100' :
 								'bg-slate-50 text-slate-500 border-slate-100'
 							)}>
-								<span class="text-xs font-black">{row.bebanSekarang || 0}A</span>
+								<span class="text-xs font-black">{displayBeban}A</span>
 							</div>
 						</td>
 						<td class="py-3 px-6">

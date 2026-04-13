@@ -31,8 +31,8 @@
 	const topFeeders = $derived(data.topFeeders);
 	const activeManuvers = $derived(data.activeManuvers);
 
-	function formatNumber(num: number, decimals = 1) {
-		return Number(num).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+	function formatNumber(num: number, decimals = 0) {
+		return Math.round(Number(num)).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
 	}
 
 	function formatDate(date: string | Date | null) {

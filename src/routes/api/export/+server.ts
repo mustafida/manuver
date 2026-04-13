@@ -13,18 +13,21 @@ export const GET: RequestHandler = async () => {
             waktuPenormalan: manuver.waktuPenormalan,
             bebanSebelum: manuver.bebanSebelum,
             bebanAmpereManuver: manuver.bebanAmpereManuver,
-            bebanSesudah: manuver.bebanSesudah,
             sectionAsal: manuver.sectionAsal,
             sectionTujuan: manuver.sectionTujuan,
             pelaksanaanAsal: manuver.pelaksanaanAsal,
             pelaksanaanTujuan: manuver.pelaksanaanTujuan,
+            sectionAsalPenormalan: manuver.sectionAsalPenormalan,
+            sectionTujuanPenormalan: manuver.sectionTujuanPenormalan,
+            pelaksanaanAsalPenormalan: manuver.pelaksanaanAsalPenormalan,
+            pelaksanaanTujuanPenormalan: manuver.pelaksanaanTujuanPenormalan,
             keterangan: manuver.keterangan,
             durasi: manuver.durasi,
             status: manuver.status,
             penyulangAsalNama: sql<string>`p1.nama`,
-            penyulangAsalUlp: sql<string>`p1.ulp`,
+            penyulangAsalUlp: sql<string>`COALESCE(manuver.ulp_asal, p1.ulp)`,
             penyulangTujuanNama: sql<string>`p2.nama`,
-            penyulangTujuanUlp: sql<string>`p2.ulp`,
+            penyulangTujuanUlp: sql<string>`COALESCE(manuver.ulp_tujuan, p2.ulp)`,
         })
         .from(manuver)
         .innerJoin(sql`penyulang p1`, eq(manuver.penyulangAsalId, sql`p1.id`))
@@ -34,56 +37,64 @@ export const GET: RequestHandler = async () => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Riwayat Manuver');
 
-        // Mendefinisikan Kolom beserta lebarnya (tanpa header karena kita mau merge)
+        // Mendefinisikan Kolom
         worksheet.columns = [
-            { key: 'no', width: 5 },
-            { key: 'asal_ulp', width: 15 },
-            { key: 'asal_penyulang', width: 25 },
-            { key: 'tujuan_ulp', width: 15 },
-            { key: 'tujuan_penyulang', width: 25 },
-            { key: 'section_asal', width: 15 },
-            { key: 'section_tujuan', width: 15 },
-            { key: 'beban_sebelum', width: 16 },
-            { key: 'beban_manuver', width: 16 },
-            { key: 'tanggal_manuver', width: 15 },
-            { key: 'jam_manuver', width: 10 },
-            { key: 'tanggal_normal', width: 15 },
-            { key: 'jam_normal', width: 10 },
-            { key: 'pelaksanaan_asal', width: 20 },
-            { key: 'pelaksanaan_tujuan', width: 20 },
-            { key: 'durasi', width: 15 },
-            { key: 'keterangan', width: 40 }
+            { key: 'no', width: 8 },
+            { key: 'asal_ulp', width: 22 },
+            { key: 'asal_penyulang', width: 35 },
+            { key: 'tujuan_ulp', width: 22 },
+            { key: 'tujuan_penyulang', width: 35 },
+            { key: 'beban_sebelum', width: 20 },
+            { key: 'beban_manuver', width: 20 },
+            // MANUVER Columns
+            { key: 'm_tanggal', width: 20 },
+            { key: 'm_jam', width: 14 },
+            { key: 'm_sec_asal', width: 25 },
+            { key: 'm_sec_tujuan', width: 25 },
+            { key: 'm_eks_asal', width: 25 },
+            { key: 'm_eks_tujuan', width: 25 },
+            // NORMAL Columns
+            { key: 'n_tanggal', width: 20 },
+            { key: 'n_jam', width: 14 },
+            { key: 'n_sec_asal', width: 25 },
+            { key: 'n_sec_tujuan', width: 25 },
+            { key: 'n_eks_asal', width: 25 },
+            { key: 'n_eks_tujuan', width: 25 },
+            // END
+            { key: 'durasi', width: 20 },
+            { key: 'keterangan', width: 50 }
         ];
 
-        // Membangun Header Baris 1
+        // Baris 1: Main Groups
         worksheet.getRow(1).values = [
-            'NO', 'EXISTING', '', 'MANUVER KE', '', 'SECTION', '', 'BEBAN EXISTING', 'BEBAN MANUVER',
-            'WAKTU MANUVER', '', 'WAKTU PENORMALAN MANUVER', '', 'EKSEKUSI', '', 'DURASI (MENIT)', 'KETERANGAN'
+            'NO', 'EXISTING (ASAL)', '', 'MANUVER KE (TUJUAN)', '', 'BEBAN (AMPERE)', '', 
+            'PROSES MANUVER AWAL', '', '', '', '', '',
+            'PROSES PENORMALAN', '', '', '', '', '',
+            'DURASI (MENIT)', 'KETERANGAN'
         ];
 
-        // Membangun Header Baris 2
+        // Baris 2: Detailed Columns
         worksheet.getRow(2).values = [
-            '', 'ULP', 'PENYULANG', 'ULP', 'PENYULANG', 'ASAL', 'TUJUAN', '', '',
-            'TANGGAL', 'JAM', 'TANGGAL', 'JAM', 'ASAL', 'TUJUAN', '', ''
+            '', 'ULP', 'PENYULANG', 'ULP', 'PENYULANG', 'BEBAN EXISTING', 'BEBAN MANUVER',
+            'TANGGAL', 'JAM', 'SECTION ASAL', 'SECTION TUJUAN', 'EKSEKUSI ASAL', 'EKSEKUSI TUJUAN',
+            'TANGGAL', 'JAM', 'SECTION ASAL', 'SECTION TUJUAN', 'EKSEKUSI ASAL', 'EKSEKUSI TUJUAN',
+            '', ''
         ];
 
-        // Gabungkan (Merge) Cell yang Kosong
+        // Merge Columns Row 1
         worksheet.mergeCells('A1:A2'); // NO
         worksheet.mergeCells('B1:C1'); // EXISTING
         worksheet.mergeCells('D1:E1'); // MANUVER KE
-        worksheet.mergeCells('F1:G1'); // SECTION
-        worksheet.mergeCells('H1:H2'); // BEBAN EXISTING
-        worksheet.mergeCells('I1:I2'); // BEBAN MANUVER
-        worksheet.mergeCells('J1:K1'); // WAKTU MANUVER
-        worksheet.mergeCells('L1:M1'); // WAKTU PENORMALAN
-        worksheet.mergeCells('N1:O1'); // EKSEKUSI
-        worksheet.mergeCells('P1:P2'); // DURASI
-        worksheet.mergeCells('Q1:Q2'); // KETERANGAN
+        worksheet.mergeCells('F1:G1'); // BEBAN
+        worksheet.mergeCells('H1:M1'); // MANUVER AWAL
+        worksheet.mergeCells('N1:S1'); // PENORMALAN
+        worksheet.mergeCells('T1:T2'); // DURASI
+        worksheet.mergeCells('U1:U2'); // KETERANGAN
 
-        // Styling Header Custom (Baris 1 & 2)
+        // Custom Header Styling
         [1, 2].forEach(rowIdx => {
             worksheet.getRow(rowIdx).eachCell({ includeEmpty: true }, (cell) => {
-                cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 13 };
                 cell.fill = {
                     type: 'pattern',
                     pattern: 'solid',
@@ -99,41 +110,46 @@ export const GET: RequestHandler = async () => {
             });
         });
 
-        // Memasukkan data ke baris-baris berikutnya
+        // Insert Data
         listManuver.forEach((m, index) => {
-            const row = worksheet.addRow({
+            const isNormal = m.status === 'NORMAL';
+            const rowData = {
                 no: index + 1,
                 asal_ulp: m.penyulangAsalUlp,
                 asal_penyulang: m.penyulangAsalNama,
                 tujuan_ulp: m.penyulangTujuanUlp,
                 tujuan_penyulang: m.penyulangTujuanNama,
-                section_asal: m.sectionAsal || '-',
-                section_tujuan: m.sectionTujuan || '-',
                 beban_sebelum: m.bebanSebelum,
                 beban_manuver: m.bebanAmpereManuver,
-                tanggal_manuver: formatWibDate(m.waktuManuver),
-                jam_manuver: formatWibTime(m.waktuManuver),
-                tanggal_normal: m.status === 'NORMAL' ? formatWibDate(m.waktuPenormalan) : '-',
-                jam_normal: m.status === 'NORMAL' ? formatWibTime(m.waktuPenormalan) : '-',
-                pelaksanaan_asal: m.pelaksanaanAsal || '-',
-                pelaksanaan_tujuan: m.pelaksanaanTujuan || '-',
-                durasi: m.status === 'NORMAL' ? (m.durasi ?? '-') : 'PROSES',
+                // Manuver
+                m_tanggal: formatWibDate(m.waktuManuver),
+                m_jam: formatWibTime(m.waktuManuver),
+                m_sec_asal: m.sectionAsal || '-',
+                m_sec_tujuan: m.sectionTujuan || '-',
+                m_eks_asal: m.pelaksanaanAsal || '-',
+                m_eks_tujuan: m.pelaksanaanTujuan || '-',
+                // Normal
+                n_tanggal: isNormal ? formatWibDate(m.waktuPenormalan) : '-',
+                n_jam: isNormal ? formatWibTime(m.waktuPenormalan) : '-',
+                n_sec_asal: (isNormal ? m.sectionAsalPenormalan : null) || '-',
+                n_sec_tujuan: (isNormal ? m.sectionTujuanPenormalan : null) || '-',
+                n_eks_asal: (isNormal ? m.pelaksanaanAsalPenormalan : null) || '-',
+                n_eks_tujuan: (isNormal ? m.pelaksanaanTujuanPenormalan : null) || '-',
+                // End
+                durasi: isNormal ? (m.durasi ?? '-') : 'AKTIF',
                 keterangan: m.keterangan || '-'
-            });
+            };
 
-            row.eachCell((cell, colNumber) => {
+            const row = worksheet.addRow(rowData);
+            row.eachCell((cell) => {
                 cell.border = {
-                    top: { style: 'hair', color: {argb: 'FF000000'} },
-                    left: { style: 'hair', color: {argb: 'FF000000'} },
-                    bottom: { style: 'hair', color: {argb: 'FF000000'} },
-                    right: { style: 'hair', color: {argb: 'FF000000'} }
+                    top: { style: 'hair' },
+                    left: { style: 'hair' },
+                    bottom: { style: 'hair' },
+                    right: { style: 'hair' }
                 };
-
-                if ([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].includes(colNumber)) {
-                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
-                } else {
-                    cell.alignment = { vertical: 'middle', horizontal: 'left' };
-                }
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                cell.font = { size: 12 };
             });
         });
 
@@ -142,12 +158,12 @@ export const GET: RequestHandler = async () => {
         return new Response(buffer, {
             headers: {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition': `attachment; filename="Data_Manuver_${new Date().getTime()}.xlsx"`
+                'Content-Disposition': `attachment; filename="Laporan_Manuver_${new Date().toISOString().split('T')[0]}.xlsx"`
             }
         });
 
     } catch (error) {
         console.error('EXPORT EXCEL ERROR:', error);
-        return new Response('Error generating export file', { status: 500 });
+        return new Response('Internal Server Error', { status: 500 });
     }
 };

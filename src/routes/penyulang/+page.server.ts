@@ -33,9 +33,9 @@ export const actions: Actions = {
         if (isNaN(bebanMalam) || bebanMalam <= 0) return fail(400, { message: 'Beban Malam harus angka > 0.' });
 
         try {
-            // Determine initial bebanSekarang based on current time (Siang: 10-19)
+            // Determine initial bebanSekarang based on current time (Siang: 07:00 - 16:00)
             const hour = new Date().getHours();
-            const initialBeban = (hour >= 10 && hour < 19) ? bebanSiang : bebanMalam;
+            const initialBeban = (hour >= 7 && hour < 16) ? bebanSiang : bebanMalam;
 
             await db.insert(penyulang).values({
                 nama,

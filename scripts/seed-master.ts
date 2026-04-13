@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import { drizzle } from 'drizzle-orm/mysql2';
 import * as schema from '../src/lib/server/db/schema';
@@ -67,7 +68,8 @@ const dataRaw = [
 ];
 
 async function main() {
-    const DATABASE_URL = "mysql://root@localhost:3306/manuver";
+    const DATABASE_URL = process.env.DATABASE_URL;
+    if (!DATABASE_URL) throw new Error('DATABASE_URL is not set');
     const client = mysql.createPool(DATABASE_URL);
     const db = drizzle(client, { schema, mode: 'default' });
 
