@@ -18,6 +18,8 @@ export const load: PageServerLoad = async () => {
 			bebanAmpereManuver: manuver.bebanAmpereManuver,
 			durasi: manuver.durasi,
 			status: manuver.status,
+			pelaksanaanAsal: manuver.pelaksanaanAsal,
+			pelaksanaanTujuan: manuver.pelaksanaanTujuan,
 			penyulangAsal: { nama: sql<string>`p1.nama`, ulp: sql<string>`p1.ulp` },
 			penyulangTujuan: { nama: sql<string>`p2.nama`, ulp: sql<string>`p2.ulp` },
 		})

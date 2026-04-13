@@ -66,7 +66,8 @@
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Sec. Tujuan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Manuver</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Waktu Penormalan</th>
-						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Pelaksanaan</th>
+						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Asal</th>
+						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Tujuan</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest text-center">Durasi</th>
 						<th class="py-4 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-center">Keterangan</th>
 					</tr>
@@ -74,7 +75,7 @@
 				<tbody class="divide-y divide-slate-50">
 					{#if data.listManuver.length === 0}
 						<tr>
-							<td colspan="10" class="py-20 text-center space-y-4">
+							<td colspan="12" class="py-20 text-center space-y-4">
 								<div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
 									<Database class="w-8 h-8" />
 								</div>
@@ -112,7 +113,12 @@
 								</td>
 								<td class="py-4 px-6 text-center text-sm font-bold text-slate-700">{formatDate(m.waktuManuver)}</td>
 								<td class="py-4 px-6 text-center text-sm font-bold text-emerald-600">{formatDate(m.waktuPenormalan)}</td>
-								<td class="py-4 px-6 text-center text-xs font-medium text-slate-600">{m.pelaksanaan || '-'}</td>
+								<td class="py-4 px-6 text-center">
+									<span class="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 uppercase">{m.pelaksanaanAsal || '-'}</span>
+								</td>
+								<td class="py-4 px-6 text-center">
+									<span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100 uppercase">{m.pelaksanaanTujuan || '-'}</span>
+								</td>
 								<td class="py-4 px-6 text-center">
 									{#if m.durasi !== null && m.durasi !== undefined}
 										<span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter border border-blue-100">

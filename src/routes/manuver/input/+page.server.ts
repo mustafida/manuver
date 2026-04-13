@@ -42,7 +42,8 @@ export const actions: Actions = {
 		const bebanAmpereManuver = Number(formData.get('bebanAmpereManuver'));
 		const waktuManuverStr = formData.get('waktuManuver')?.toString();
 		const waktuPenormalanStr = formData.get('waktuPenormalan')?.toString();
-		const pelaksanaan = formData.get('pelaksanaan')?.toString()?.trim(); // This will be dropdown value
+		const pelaksanaanAsal = formData.get('pelaksanaanAsal')?.toString()?.trim();
+		const pelaksanaanTujuan = formData.get('pelaksanaanTujuan')?.toString()?.trim();
 		const keterangan = formData.get('keterangan')?.toString()?.trim();
 
 		// Validation according to gemini.md: "Semua field wajib"
@@ -54,7 +55,8 @@ export const actions: Actions = {
 		if (isNaN(bebanSebelum) || bebanSebelum <= 0) return fail(400, { message: 'Beban Existing harus angka > 0.' });
 		if (isNaN(bebanAmpereManuver) || bebanAmpereManuver <= 0) return fail(400, { message: 'Beban Manuver harus angka > 0.' });
 		if (!waktuManuverStr) return fail(400, { message: 'Waktu Manuver wajib diisi.' });
-		if (!pelaksanaan) return fail(400, { message: 'Metode Eksekusi wajib dipilih.' });
+		if (!pelaksanaanAsal) return fail(400, { message: 'Metode Eksekusi Asal wajib dipilih.' });
+		if (!pelaksanaanTujuan) return fail(400, { message: 'Metode Eksekusi Tujuan wajib dipilih.' });
 		if (!keterangan) return fail(400, { message: 'Keterangan wajib diisi.' });
 
 		try {
@@ -74,7 +76,8 @@ export const actions: Actions = {
 					bebanAmpereManuver,
 					bebanSebelum: bebanSebelum || 0,
 					bebanSesudah: null, // Initial 
-					pelaksanaan,
+					pelaksanaanAsal,
+					pelaksanaanTujuan,
 					keterangan,
 					durasi,
 					status: waktuPenormalan ? 'NORMAL' : 'AKTIF'

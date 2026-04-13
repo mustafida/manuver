@@ -207,6 +207,27 @@
 							<input type="text" id="sectionTujuan" name="sectionTujuan" required placeholder="Titik Section Tujuan..." class="w-full bg-white border-transparent rounded-2xl px-6 py-4 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700" />
 						</div>
 					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div class="space-y-2">
+							<label for="pelaksanaanAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Eksekusi Asal</label>
+							<select id="pelaksanaanAsal" name="pelaksanaanAsal" required class="w-full bg-white border-transparent rounded-2xl px-6 py-4 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
+								<option value="">-- Metode Eksekusi Asal --</option>
+								{#each eksekusiOpsi as opsi}
+									<option value={opsi}>{opsi}</option>
+								{/each}
+							</select>
+						</div>
+						<div class="space-y-2">
+							<label for="pelaksanaanTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Eksekusi Tujuan</label>
+							<select id="pelaksanaanTujuan" name="pelaksanaanTujuan" required class="w-full bg-white border-transparent rounded-2xl px-6 py-4 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
+								<option value="">-- Metode Eksekusi Tujuan --</option>
+								{#each eksekusiOpsi as opsi}
+									<option value={opsi}>{opsi}</option>
+								{/each}
+							</select>
+						</div>
+					</div>
 				</div>
 
 				<!-- Timing Side by Side (Left) -->
@@ -249,17 +270,8 @@
 				<!-- Execution -->
 				<div class="space-y-4 md:col-span-2 bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100">
 					<div class="flex items-center gap-2 mb-2">
-						<User class="w-5 h-5 text-slate-500" />
-						<h4 class="font-black text-slate-600 uppercase tracking-widest">4. Eksekusi & Catatan</h4>
-					</div>
-					<div class="space-y-2">
-						<label for="pelaksanaan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Eksekusi</label>
-						<select id="pelaksanaan" name="pelaksanaan" required class="w-full bg-white border-transparent rounded-2xl px-6 py-4 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer">
-							<option value="">-- Pilih Metode Eksekusi --</option>
-							{#each eksekusiOpsi as opsi}
-								<option value={opsi}>{opsi}</option>
-							{/each}
-						</select>
+						<FileEdit class="w-5 h-5 text-slate-500" />
+						<h4 class="font-black text-slate-600 uppercase tracking-widest">4. Catatan</h4>
 					</div>
 					<!-- Keterangan -->
 					<div class="space-y-2">

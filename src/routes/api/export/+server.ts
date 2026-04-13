@@ -15,7 +15,8 @@ export const GET: RequestHandler = async () => {
 			bebanSesudah: manuver.bebanSesudah,
 			sectionAsal: manuver.sectionAsal,
 			sectionTujuan: manuver.sectionTujuan,
-			pelaksanaan: manuver.pelaksanaan,
+			pelaksanaanAsal: manuver.pelaksanaanAsal,
+			pelaksanaanTujuan: manuver.pelaksanaanTujuan,
 			keterangan: manuver.keterangan,
 			durasi: manuver.durasi,
 			status: manuver.status,
@@ -58,7 +59,8 @@ export const GET: RequestHandler = async () => {
 			{ key: 'jam_manuver', width: 10 },
 			{ key: 'tanggal_normal', width: 15 },
 			{ key: 'jam_normal', width: 10 },
-			{ key: 'pelaksanaan', width: 20 },
+			{ key: 'pelaksanaan_asal', width: 20 },
+			{ key: 'pelaksanaan_tujuan', width: 20 },
 			{ key: 'durasi', width: 15 },
 			{ key: 'keterangan', width: 40 }
 		];
@@ -66,13 +68,13 @@ export const GET: RequestHandler = async () => {
 		// Membangun Header Baris 1
 		worksheet.getRow(1).values = [
 			'NO', 'EXISTING', '', 'MANUVER KE', '', 'SECTION', '', 'BEBAN EXISTING', 'BEBAN MANUVER',
-			'WAKTU MANUVER', '', 'WAKTU PENORMALAN MANUVER', '', 'EKSEKUSI', 'DURASI (MENIT)', 'KETERANGAN'
+			'WAKTU MANUVER', '', 'WAKTU PENORMALAN MANUVER', '', 'EKSEKUSI', '', 'DURASI (MENIT)', 'KETERANGAN'
 		];
 
 		// Membangun Header Baris 2
 		worksheet.getRow(2).values = [
 			'', 'ULP', 'PENYULANG', 'ULP', 'PENYULANG', 'ASAL', 'TUJUAN', '', '',
-			'TANGGAL', 'JAM', 'TANGGAL', 'JAM', '', '', ''
+			'TANGGAL', 'JAM', 'TANGGAL', 'JAM', 'ASAL', 'TUJUAN', '', ''
 		];
 
 		// Gabungkan (Merge) Cell yang Kosong
@@ -84,9 +86,9 @@ export const GET: RequestHandler = async () => {
 		worksheet.mergeCells('I1:I2'); // BEBAN MANUVER
 		worksheet.mergeCells('J1:K1'); // WAKTU MANUVER
 		worksheet.mergeCells('L1:M1'); // WAKTU PENORMALAN
-		worksheet.mergeCells('N1:N2'); // EKSEKUSI
-		worksheet.mergeCells('O1:O2'); // DURASI
-		worksheet.mergeCells('P1:P2'); // KETERANGAN
+		worksheet.mergeCells('N1:O1'); // EKSEKUSI
+		worksheet.mergeCells('P1:P2'); // DURASI
+		worksheet.mergeCells('Q1:Q2'); // KETERANGAN
 
 		// Styling Header Custom (Baris 1 & 2)
 		const borderDashedStyle = { style: 'mediumDashed' } as any;
@@ -125,7 +127,8 @@ export const GET: RequestHandler = async () => {
 				jam_manuver: formatTimePart(m.waktuManuver),
 				tanggal_normal: m.status === 'NORMAL' ? formatDatePart(m.waktuPenormalan) : '-',
 				jam_normal: m.status === 'NORMAL' ? formatTimePart(m.waktuPenormalan) : '-',
-				pelaksanaan: m.pelaksanaan || '-',
+				pelaksanaan_asal: m.pelaksanaanAsal || '-',
+				pelaksanaan_tujuan: m.pelaksanaanTujuan || '-',
 				durasi: m.status === 'NORMAL' ? (m.durasi ?? '-') : 'PROSES',
 				keterangan: m.keterangan || '-'
 			});
@@ -140,7 +143,7 @@ export const GET: RequestHandler = async () => {
 				};
 
 				// Rata tengah
-				if ([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(colNumber)) {
+				if ([1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].includes(colNumber)) {
 					cell.alignment = { vertical: 'middle', horizontal: 'center' };
 				} else {
 					cell.alignment = { vertical: 'middle', horizontal: 'left' };

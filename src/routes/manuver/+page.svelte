@@ -152,6 +152,8 @@
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Status</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Beban (Ampere)</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Waktu (Log)</th>
+						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Asal</th>
+						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-center">Eks. Tujuan</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest text-right">Durasi</th>
 						<th class="py-5 px-6 font-bold text-xs uppercase tracking-widest last:rounded-tr-3xl text-right">Aksi</th>
 					</tr>
@@ -223,6 +225,12 @@
 											</span>
 										{/if}
 									</div>
+								</td>
+								<td class="py-5 px-6 text-center">
+									<span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase">{m.pelaksanaanAsal || '-'}</span>
+								</td>
+								<td class="py-5 px-6 text-center">
+									<span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100 uppercase">{m.pelaksanaanTujuan || '-'}</span>
 								</td>
 								<td class="py-5 px-6 text-right">
 									{#if m.durasi !== null && m.durasi !== undefined}
