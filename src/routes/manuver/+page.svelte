@@ -22,7 +22,7 @@
 		return twMerge(clsx(inputs));
 	}
 
-	import { parseSqlDate } from '$lib/utils/date';
+	import { formatDisplayDate } from '$lib/utils/date';
 
 	let { data }: { data: PageData } = $props();
 
@@ -32,39 +32,15 @@
 	const filteredManuvers = $derived(
 		data.listManuver.filter(m => {
 			const matchesSearch = 
-				m.penyulangAsal.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				m.penyulangTujuan.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				m.penyulangAsal.ulp.toLowerCase().includes(searchQuery.toLowerCase());
+				m.penyulangAsalNama.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				m.penyulangTujuanNama.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				m.penyulangAsalUlp.toLowerCase().includes(searchQuery.toLowerCase());
 			
 			const matchesFilter = filterStatus === 'ALL' || m.status === filterStatus;
 			
 			return matchesSearch && matchesFilter;
 		})
 	);
-
-	const MONTHS_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-	const pad2 = (n: number) => String(n).padStart(2, '0');
-
-	function formatDate(date: string | Date | null) {
-		if (!date) return '-';
-
-		const raw = String(date).trim();
-		const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
-
-		if (match) {
-			const year = Number(match[1]);
-			const monthIndex = Number(match[2]) - 1;
-			const day = Number(match[3]);
-			const hour = Number(match[4]);
-			const minute = Number(match[5]);
-
-			return `${pad2(day)} ${MONTHS_ID[monthIndex] ?? '-'} ${year}, ${pad2(hour)}:${pad2(minute)}`;
-		}
-
-		const d = parseSqlDate(date);
-		if (!d) return '-';
-		return `${pad2(d.getDate())} ${MONTHS_ID[d.getMonth()] ?? '-'} ${d.getFullYear()}, ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-	}
 </script>
 
 <div class="space-y-8 animate-in fade-in duration-500">
@@ -161,7 +137,7 @@
 				<tbody class="divide-y divide-slate-50">
 					{#if filteredManuvers.length === 0}
 						<tr>
-							<td colspan="6" class="py-20 text-center space-y-4">
+							<td colspan="8" class="py-20 text-center space-y-4">
 								<div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
 									<Database class="w-8 h-8" />
 								</div>
@@ -179,9 +155,9 @@
 										)}></div>
 										<div class="flex flex-col">
 											<div class="flex items-center gap-2">
-												<span class="font-black text-slate-800">{m.penyulangAsal.nama}</span>
+												<span class="font-black text-slate-800">{m.penyulangAsalNama}</span>
 												<ArrowRight class="w-3 h-3 text-slate-300" />
-												<span class="font-bold text-slate-600">{m.penyulangTujuan.nama}</span>
+												<span class="font-bold text-slate-600">{m.penyulangTujuanNama}</span>
 											</div>
 											<div class="mt-1 flex gap-2">
 												{#if m.sectionAsal}
@@ -217,11 +193,11 @@
 								</td>
 								<td class="py-5 px-6 text-right">
 									<div class="flex flex-col items-end">
-										<span class="text-xs font-black text-slate-700 leading-none mb-1">{formatDate(m.waktuManuver)}</span>
+										<span class="text-xs font-black text-slate-700 leading-none mb-1">{m.waktuManuverStr}</span>
 										{#if m.status === 'NORMAL'}
 											<span class="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter flex items-center gap-1">
 												<CheckCircle2 class="w-2.5 h-2.5" />
-												Selesai: {formatDate(m.waktuPenormalan)}
+												Selesai: {m.waktuPenormalanStr}
 											</span>
 										{/if}
 									</div>
@@ -243,17 +219,13 @@
 								<td class="py-5 px-6 text-right">
 									<div class="flex items-center justify-end gap-2">
 										{#if m.status === 'AKTIF'}
-											<form action="?/normalize" method="POST" use:enhance>
-												<input type="hidden" name="id" value={m.id}>
-												<button 
-													type="submit" 
-													class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all text-[9px] uppercase flex items-center gap-1"
-													onclick={(e) => { if(!confirm('Yakin ingin menormalkan beban ini?')) e.preventDefault(); }}
-												>
-													<CheckCircle2 class="w-3 h-3" />
-													Normalkan
-												</button>
-											</form>
+											<a 
+												href="/manuver/{m.id}/penormalan"
+												class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all text-[9px] uppercase flex items-center gap-1"
+											>
+												<CheckCircle2 class="w-3 h-3" />
+												Normalkan
+											</a>
 										{/if}
 										<form action="?/delete" method="POST" use:enhance>
 											<input type="hidden" name="id" value={m.id}>

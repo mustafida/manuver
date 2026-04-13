@@ -60,8 +60,9 @@ export const actions: Actions = {
 		if (!keterangan) return fail(400, { message: 'Keterangan wajib diisi.' });
 
 		try {
-			const waktuManuver = new Date(waktuManuverStr);
-			const waktuPenormalan = waktuPenormalanStr ? new Date(waktuPenormalanStr) : null;
+			// Append +07:00 to ensure the string is interpreted as WIB (Asia/Jakarta)
+			const waktuManuver = new Date(waktuManuverStr + ":00+07:00");
+			const waktuPenormalan = waktuPenormalanStr ? new Date(waktuPenormalanStr + ":00+07:00") : null;
 
 			await db.transaction(async (tx) => {
 				const durasi = waktuPenormalan ? Math.floor((waktuPenormalan.getTime() - waktuManuver.getTime()) / (1000 * 60)) : null;

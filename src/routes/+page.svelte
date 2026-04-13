@@ -23,7 +23,7 @@
 		return twMerge(clsx(inputs));
 	}
 
-	import { parseSqlDate } from '$lib/utils/date';
+	import { formatDisplayDate } from '$lib/utils/date';
 
 	let { data }: { data: PageData } = $props();
 
@@ -35,16 +35,8 @@
 		return Number(num).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
 	}
 
-	function formatDate(date: string | Date) {
-		const d = parseSqlDate(date);
-		if (!d) return '-';
-		return d.toLocaleString('id-ID', { 
-			day: '2-digit', 
-			month: 'short', 
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
+	function formatDate(date: string | Date | null) {
+		return formatDisplayDate(date, { includeTime: true, shortMonth: true });
 	}
 </script>
 
@@ -284,21 +276,21 @@
 										</div>
 										<span class="text-xs font-black uppercase tracking-widest text-[#FFCC00]">Manuver Aktif</span>
 									</div>
-									<span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">{formatDate(m.waktuManuver)}</span>
+									<span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">{m.waktuManuverStr}</span>
 								</div>
 								
 								<div class="p-8">
 									<div class="flex items-center gap-6 mb-8">
 										<div class="flex-1 text-center space-y-1">
 											<p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-none">Asal</p>
-											<h4 class="text-xl font-black text-slate-800 truncate">{m.penyulangAsal.nama}</h4>
+											<h4 class="text-xl font-black text-slate-800 truncate">{m.penyulangAsalNama}</h4>
 										</div>
 										<div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-[#00A2E9] shadow-inner">
 											<ArrowRight class="w-6 h-6" />
 										</div>
 										<div class="flex-1 text-center space-y-1">
 											<p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-none">Tujuan</p>
-											<h4 class="text-xl font-black text-slate-800 truncate">{m.penyulangTujuan.nama}</h4>
+											<h4 class="text-xl font-black text-slate-800 truncate">{m.penyulangTujuanNama}</h4>
 										</div>
 									</div>
 
@@ -312,17 +304,13 @@
 												<p class="text-2xl font-black text-blue-600">{m.bebanAmpereManuver} <span class="text-sm font-bold opacity-60">A</span></p>
 											</div>
 										</div>
-										<form action="/manuver?/normalize" method="POST" use:enhance>
-											<input type="hidden" name="id" value={m.id}>
-											<button 
-												type="submit" 
-												class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00A2E9]/20 transition-all text-sm flex items-center gap-2"
-												onclick={(e) => { if(!confirm('Yakin ingin menormalkan beban ini?')) e.preventDefault(); }}
-											>
-												<CheckCircle2 class="w-4 h-4" />
-												Normalkan
-											</button>
-										</form>
+										<a 
+											href="/manuver/{m.id}/penormalan"
+											class="bg-[#00A2E9] hover:bg-[#005B8F] text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00A2E9]/20 transition-all text-sm flex items-center gap-2"
+										>
+											<CheckCircle2 class="w-4 h-4" />
+											Normalkan
+										</a>
 									</div>
 								</div>
 							</div>

@@ -26,11 +26,11 @@
 			<span class="text-xs font-bold text-indigo-400 bg-white px-2 py-1 rounded shadow-sm inline-block mb-3 uppercase">Rangkuman Manuver Aktif</span>
 			<div class="flex items-center justify-center gap-6 mt-2">
 				<div class="text-right flex-1">
-					<div class="font-bold text-lg">{data.manuverData.penyulangAsal.nama}</div>
+					<div class="font-bold text-lg">{data.manuverData.penyulangAsalNama}</div>
 				</div>
 				<div class="text-indigo-300">➔</div>
 				<div class="text-left flex-1">
-					<div class="font-bold text-lg">{data.manuverData.penyulangTujuan.nama}</div>
+					<div class="font-bold text-lg">{data.manuverData.penyulangTujuanNama}</div>
 				</div>
 			</div>
 			<div class="mt-4 pt-4 border-t border-indigo-200/50 flex justify-center gap-10">
@@ -49,12 +49,6 @@
 			<div>
 				<label for="waktuPenormalan" class="block text-sm font-medium text-slate-600 mb-1">Dinyatakan Normal Pada <span class="text-rose-500">*</span></label>
 				<input type="datetime-local" id="waktuPenormalan" name="waktuPenormalan" required value={getNowStr()} class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition">
-			</div>
-
-			<div>
-				<label for="bebanSesudah" class="block text-sm font-medium text-slate-600 mb-1">Beban Setelah Penormalan (Ampere) <span class="text-rose-500">*</span></label>
-				<input type="number" step="0.01" id="bebanSesudah" name="bebanSesudah" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-500/20 transition text-emerald-700 font-bold text-lg" placeholder="100.00">
-				<p class="text-xs text-slate-400 mt-2">Masukkan nilai akhir beban ampere setelah sistem kembali dikonfigurasi ke keadaan semula.</p>
 			</div>
 
 			<div class="pt-6 border-t border-slate-100 flex justify-end gap-3">

@@ -12,16 +12,18 @@ export const load: PageServerLoad = async () => {
 			id: manuver.id,
 			sectionAsal: manuver.sectionAsal,
 			sectionTujuan: manuver.sectionTujuan,
-			// Keep DB wall-clock value as string to avoid timezone shifts on hydration.
-			waktuManuver: sql<string>`DATE_FORMAT(${manuver.waktuManuver}, '%Y-%m-%d %H:%i:%s')`,
-			waktuPenormalan: sql<string | null>`DATE_FORMAT(${manuver.waktuPenormalan}, '%Y-%m-%d %H:%i:%s')`,
+			// ULTIMATE FIX: Format directly in MySQL to Jakarta Time string
+			waktuManuverStr: sql<string>`DATE_FORMAT(CONVERT_TZ(${manuver.waktuManuver}, '+00:00', '+07:00'), '%d/%m/%Y, %H:%i')`,
+			waktuPenormalanStr: sql<string | null>`DATE_FORMAT(CONVERT_TZ(${manuver.waktuPenormalan}, '+00:00', '+07:00'), '%d/%m/%Y, %H:%i')`,
 			bebanAmpereManuver: manuver.bebanAmpereManuver,
 			durasi: manuver.durasi,
 			status: manuver.status,
 			pelaksanaanAsal: manuver.pelaksanaanAsal,
 			pelaksanaanTujuan: manuver.pelaksanaanTujuan,
-			penyulangAsal: { nama: sql<string>`p1.nama`, ulp: sql<string>`p1.ulp` },
-			penyulangTujuan: { nama: sql<string>`p2.nama`, ulp: sql<string>`p2.ulp` },
+			penyulangAsalNama: sql<string>`p1.nama`,
+			penyulangAsalUlp: sql<string>`p1.ulp`,
+			penyulangTujuanNama: sql<string>`p2.nama`,
+			penyulangTujuanUlp: sql<string>`p2.ulp`,
 		})
 		.from(manuver)
 		.innerJoin(sql`penyulang p1`, eq(manuver.penyulangAsalId, sql`p1.id`))
@@ -51,7 +53,6 @@ export const actions: Actions = {
 	normalize: async ({ request }) => {
 		const formData = await request.formData();
 		const id = Number(formData.get('id'));
-		const bebanSesudah = Number(formData.get('bebanSesudah'));
 
 		if (!id) return fail(400, { message: 'ID tidak ditemukan' });
 
@@ -61,34 +62,37 @@ export const actions: Actions = {
 				const [m] = await tx.select().from(manuver).where(eq(manuver.id, id)).limit(1);
 				if (!m || m.status === 'NORMAL') return;
 
-				// 2. Update status
+				// 2. Calculate duration safely
 				const now = getIndonesianDate();
-				const startTime = new Date(m.waktuManuver).getTime();
+				const startVal = m.waktuManuver;
+				const startDate = startVal instanceof Date ? startVal : new Date(startVal);
+				const startTime = startDate.getTime();
 				const nowTime = now.getTime();
-				const durasi = Math.floor((nowTime - startTime) / (1000 * 60));
+				
+				let durasi = 0;
+				if (!isNaN(startTime) && !isNaN(nowTime)) {
+					durasi = Math.floor((nowTime - startTime) / (1000 * 60));
+				}
 
+				// 3. Update status
 				await tx.update(manuver)
 					.set({ 
 						status: 'NORMAL', 
 						waktuPenormalan: now,
-						bebanSesudah: bebanSesudah || 0,
-						durasi: durasi
+						durasi: Math.max(0, durasi)
 					})
 					.where(eq(manuver.id, id));
 
-				// 3. RESTORE LOADS
+				// 4. RESTORE LOADS ATOMICALLY
 				// Add back to Asal
-				await tx.execute(sql`
-					UPDATE penyulang 
-					SET beban_sekarang = beban_sekarang + ${m.bebanAmpereManuver} 
-					WHERE id = ${m.penyulangAsalId}
-				`);
+				await tx.update(penyulang)
+					.set({ bebanSekarang: sql`${penyulang.bebanSekarang} + ${m.bebanAmpereManuver}` })
+					.where(eq(penyulang.id, m.penyulangAsalId));
+
 				// Deduct from Tujuan
-				await tx.execute(sql`
-					UPDATE penyulang 
-					SET beban_sekarang = beban_sekarang - ${m.bebanAmpereManuver} 
-					WHERE id = ${m.penyulangTujuanId}
-				`);
+				await tx.update(penyulang)
+					.set({ bebanSekarang: sql`${penyulang.bebanSekarang} - ${m.bebanAmpereManuver}` })
+					.where(eq(penyulang.id, m.penyulangTujuanId));
 			});
 
 			return { success: true };

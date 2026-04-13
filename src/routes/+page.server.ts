@@ -71,11 +71,11 @@ export const load: PageServerLoad = async () => {
 		// 7. Active Manuvers (Live)
 		const activeManuvers = await db.select({
 			id: manuver.id,
-			waktuManuver: manuver.waktuManuver,
+			waktuManuverStr: sql<string>`DATE_FORMAT(CONVERT_TZ(${manuver.waktuManuver}, '+00:00', '+07:00'), '%d/%m/%Y, %H:%i')`,
 			bebanAmpereManuver: manuver.bebanAmpereManuver,
 			status: manuver.status,
-			penyulangAsal: { nama: p1.nama },
-			penyulangTujuan: { nama: p2.nama },
+			penyulangAsalNama: p1.nama,
+			penyulangTujuanNama: p2.nama,
 		})
 		.from(manuver)
 		.innerJoin(p1, eq(manuver.penyulangAsalId, p1.id))

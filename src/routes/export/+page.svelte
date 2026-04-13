@@ -16,17 +16,10 @@
 	}
 
 	let { data }: { data: PageData } = $props();
+	import { formatDisplayDate } from '$lib/utils/date';
 
 	function formatDate(date: string | Date | null) {
-		if (!date) return '-';
-		return new Date(date).toLocaleString('id-ID', { 
-			day: '2-digit', 
-			month: 'short', 
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			timeZone: 'UTC'
-		});
+		return formatDisplayDate(date, { includeTime: true, shortMonth: true });
 	}
 </script>
 
@@ -85,10 +78,10 @@
 					{:else}
 						{#each data.listManuver as m}
 							<tr class="hover:bg-slate-50 transition-colors">
-								<td class="py-4 px-6 font-black text-slate-700">{m.penyulangAsal.nama}</td>
+								<td class="py-4 px-6 font-black text-slate-700">{m.penyulangAsalNama}</td>
 								<td class="py-4 px-6 font-bold text-slate-600 text-center flex justify-center items-center gap-2">
 									<ArrowRight class="w-3 h-3 text-slate-300" />
-									{m.penyulangTujuan.nama}
+									{m.penyulangTujuanNama}
 								</td>
 								<td class="py-4 px-6 text-center">
 									<span class={cn(
@@ -111,8 +104,8 @@
 								<td class="py-4 px-6 text-center text-[10px] font-black">
 									<span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">{m.sectionTujuan || '-'}</span>
 								</td>
-								<td class="py-4 px-6 text-center text-sm font-bold text-slate-700">{formatDate(m.waktuManuver)}</td>
-								<td class="py-4 px-6 text-center text-sm font-bold text-emerald-600">{formatDate(m.waktuPenormalan)}</td>
+								<td class="py-4 px-6 text-center text-sm font-bold text-slate-700">{m.waktuManuverStr}</td>
+								<td class="py-4 px-6 text-center text-sm font-bold text-emerald-600">{m.waktuPenormalanStr || '-'}</td>
 								<td class="py-4 px-6 text-center">
 									<span class="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 uppercase">{m.pelaksanaanAsal || '-'}</span>
 								</td>
