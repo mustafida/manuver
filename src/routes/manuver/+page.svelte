@@ -13,7 +13,8 @@
 		ChevronLeft,
 		ChevronRight,
 		ArrowRight,
-		Trash2
+		Trash2,
+		FileEdit
 	} from 'lucide-svelte';
 	import { clsx, type ClassValue } from 'clsx';
 	import { twMerge } from 'tailwind-merge';
@@ -292,6 +293,13 @@
 									<CheckCircle2 class="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
 								</a>
 							{/if}
+							<a 
+								href="/manuver/{m.id}/edit"
+								class="p-1.5 text-slate-300 hover:text-amber-500 transition-all rounded-lg"
+								title="Edit Manuver"
+							>
+								<FileEdit class="w-3.5 h-3.5" />
+							</a>
 							<form action="?/delete" method="POST" use:enhance>
 								<input type="hidden" name="id" value={m.id}>
 								<button 
