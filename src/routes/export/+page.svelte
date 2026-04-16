@@ -1,12 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { 
 		FileSpreadsheet, 
 		Database, 
 		CheckCircle2, 
 		Activity,
 		ArrowRight,
-		Download
+		Download,
+		Filter,
+		CalendarDays
 	} from 'lucide-svelte';
 	import { clsx, type ClassValue } from 'clsx';
 	import { twMerge } from 'tailwind-merge';
@@ -21,28 +25,102 @@
 	function formatDate(date: string | Date | null) {
 		return formatDisplayDate(date, { includeTime: true, shortMonth: true });
 	}
+
+	let selectedMonth = $state($page.url.searchParams.get('month') || 'all');
+	let selectedYear = $state($page.url.searchParams.get('year') || new Date().getFullYear().toString());
+
+	function applyFilter() {
+		let query = new URLSearchParams();
+		if (selectedMonth && selectedMonth !== 'all') query.set('month', selectedMonth);
+		if (selectedYear && selectedYear !== 'all') query.set('year', selectedYear);
+		goto(`?${query.toString()}`, { keepFocus: true, noScroll: true });
+	}
+
+	const months = [
+		{ value: 'all', label: 'Semua Bulan' },
+		{ value: '1', label: 'Januari' },
+		{ value: '2', label: 'Februari' },
+		{ value: '3', label: 'Maret' },
+		{ value: '4', label: 'April' },
+		{ value: '5', label: 'Mei' },
+		{ value: '6', label: 'Juni' },
+		{ value: '7', label: 'Juli' },
+		{ value: '8', label: 'Agustus' },
+		{ value: '9', label: 'September' },
+		{ value: '10', label: 'Oktober' },
+		{ value: '11', label: 'November' },
+		{ value: '12', label: 'Desember' }
+	];
+
+	// Generate years from 2024 to current + 1
+	const currentYear = new Date().getFullYear();
+	const years = [{ value: 'all', label: 'Semua Tahun' }];
+	for (let i = 2024; i <= currentYear + 1; i++) {
+		years.push({ value: i.toString(), label: i.toString() });
+	}
+
+	let exportUrl = $derived(`/api/export?month=${selectedMonth}&year=${selectedYear}`);
 </script>
 
 <div class="space-y-8 animate-in fade-in duration-500">
-	<!-- Header -->
-	<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-		<div class="flex items-center gap-4">
-			<div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shadow-sm border border-green-100">
-				<FileSpreadsheet class="w-6 h-6" />
+	<!-- Header & Filters -->
+	<div class="flex flex-col gap-6">
+		<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+			<div class="flex items-center gap-4">
+				<div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shadow-sm border border-green-100">
+					<FileSpreadsheet class="w-6 h-6" />
+				</div>
+				<div>
+					<h1 class="text-3xl font-black text-slate-800 tracking-tight">Export Data Manuver</h1>
+					<p class="text-slate-500 font-medium">Rekapitulasi seluruh riwayat manuver beserta waktu penormalan</p>
+				</div>
 			</div>
-			<div>
-				<h1 class="text-3xl font-black text-slate-800 tracking-tight">Export Data Manuver</h1>
-				<p class="text-slate-500 font-medium">Rekapitulasi seluruh riwayat manuver beserta waktu penormalan</p>
+			<a 
+				href={exportUrl}
+				target="_blank"
+				class="bg-[#10B981] hover:bg-[#059669] text-white font-black px-6 py-3 rounded-2xl shadow-lg shadow-[#10B981]/20 transition-all flex items-center justify-center gap-2 group self-start whitespace-nowrap"
+			>
+				<Download class="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+				Export ke Excel (.xlsx)
+			</a>
+		</div>
+
+		<!-- Filters Panel -->
+		<div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row gap-4 items-center">
+			<div class="flex items-center gap-2 text-slate-500 font-bold text-sm">
+				<Filter class="w-4 h-4" />
+				<span>Filter Laporan:</span>
+			</div>
+			
+			<div class="flex flex-1 gap-3 w-full sm:w-auto">
+				<div class="relative flex-1 sm:max-w-xs group">
+					<div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#00A2E9] transition-colors pointer-events-none">
+						<CalendarDays class="w-4 h-4" />
+					</div>
+					<select 
+						bind:value={selectedMonth}
+						onchange={applyFilter}
+						class="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/20 transition-all text-sm font-bold text-slate-700 appearance-none cursor-pointer"
+					>
+						{#each months as month}
+							<option value={month.value}>{month.label}</option>
+						{/each}
+					</select>
+				</div>
+
+				<div class="relative flex-1 sm:max-w-[150px] group">
+					<select 
+						bind:value={selectedYear}
+						onchange={applyFilter}
+						class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/20 transition-all text-sm font-bold text-slate-700 appearance-none cursor-pointer"
+					>
+						{#each years as year}
+							<option value={year.value}>{year.label}</option>
+						{/each}
+					</select>
+				</div>
 			</div>
 		</div>
-		<a 
-			href="/api/export" 
-			target="_blank"
-			class="bg-[#10B981] hover:bg-[#059669] text-white font-black px-6 py-3 rounded-2xl shadow-lg shadow-[#10B981]/20 transition-all flex items-center justify-center gap-2 group"
-		>
-			<Download class="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
-			Export ke Excel (.xlsx)
-		</a>
 	</div>
 
 	<!-- Data Table -->

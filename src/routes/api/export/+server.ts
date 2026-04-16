@@ -1,13 +1,16 @@
 import { db } from '$lib/server/db';
 import { manuver, penyulang } from '$lib/server/db/schema';
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, eq, sql, and } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 import { formatWibDate, formatWibTime } from '$lib/utils/date';
 import ExcelJS from 'exceljs';
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ url }) => {
     try {
-        const listManuver = await db.select({
+        const month = url.searchParams.get('month');
+        const year = url.searchParams.get('year');
+
+        let query = db.select({
             id: manuver.id,
             waktuManuver: manuver.waktuManuver,
             waktuPenormalan: manuver.waktuPenormalan,
@@ -32,7 +35,21 @@ export const GET: RequestHandler = async () => {
         .from(manuver)
         .innerJoin(sql`penyulang p1`, eq(manuver.penyulangAsalId, sql`p1.id`))
         .innerJoin(sql`penyulang p2`, eq(manuver.penyulangTujuanId, sql`p2.id`))
-        .orderBy(desc(manuver.waktuManuver));
+        .$dynamic();
+
+        const filters = [];
+        if (month && month !== 'all') {
+            filters.push(sql`MONTH(CONVERT_TZ(${manuver.waktuManuver}, '+00:00', '+07:00')) = ${parseInt(month)}`);
+        }
+        if (year && year !== 'all') {
+            filters.push(sql`YEAR(CONVERT_TZ(${manuver.waktuManuver}, '+00:00', '+07:00')) = ${parseInt(year)}`);
+        }
+
+        if (filters.length > 0) {
+            query = query.where(and(...filters));
+        }
+
+        const listManuver = await query.orderBy(sql`${manuver.waktuManuver} ASC`);
 
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Riwayat Manuver');
@@ -155,10 +172,23 @@ export const GET: RequestHandler = async () => {
 
         const buffer = await workbook.xlsx.writeBuffer();
 
+        let filenameStr = `Laporan_Manuver`;
+        if (month && month !== 'all' && year && year !== 'all') {
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                                "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const monthName = monthNames[parseInt(month) - 1];
+            filenameStr += `_${monthName}_${year}`;
+        } else if (year && year !== 'all') {
+            filenameStr += `_Tahun_${year}`;
+        } else {
+             filenameStr += `_Semua_${new Date().toISOString().split('T')[0]}`;
+        }
+        filenameStr += `.xlsx`;
+
         return new Response(buffer, {
             headers: {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition': `attachment; filename="Laporan_Manuver_${new Date().toISOString().split('T')[0]}.xlsx"`
+                'Content-Disposition': `attachment; filename="${filenameStr}"`
             }
         });
 
