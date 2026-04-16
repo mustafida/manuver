@@ -128,14 +128,14 @@
 	<div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden relative">
 		<!-- Category Header Bar (PLN Blue) -->
 		<div class="bg-[#005B8F] text-white py-4 px-10 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] sticky top-0 z-30">
-			<div class="w-[30%]">Penyulang (Asal &rarr; Tujuan)</div>
-			<div class="w-[8%] text-center">Status</div>
-			<div class="w-[18%] text-center bg-white/10 py-1 rounded-lg">Detail Manuver</div>
-			<div class="w-[16%] text-center bg-white/10 py-1 rounded-lg">Detail Normal</div>
-			<div class="w-[8%] text-center">Beban</div>
-			<div class="w-[10%] text-center">Waktu Log</div>
+			<div class="w-[32%]">Penyulang (Asal &rarr; Tujuan)</div>
+			<div class="w-[7%] text-center">Status</div>
+			<div class="w-[16%] text-center bg-white/10 py-1 rounded-lg">Detail Manuver</div>
+			<div class="w-[14%] text-center bg-white/10 py-1 rounded-lg">Detail Normal</div>
+			<div class="w-[7%] text-center">Beban</div>
+			<div class="w-[9%] text-center">Waktu Log</div>
 			<div class="w-[5%] text-center">Durasi</div>
-			<div class="w-[5%] text-right">Aksi</div>
+			<div class="w-[10%] text-right">Aksi</div>
 		</div>
 
 		<div class="divide-y divide-slate-100 italic-last-row">
@@ -156,25 +156,27 @@
 						)}></div>
 
 						<!-- 1. Feeder Block -->
-						<div class="w-[30%] flex flex-col gap-1">
-							<div class="flex items-center gap-3">
-								<div class="flex flex-col min-w-0">
-									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{m.penyulangAsalUlp}</span>
-									<span class="text-base font-black text-slate-800 leading-tight">{m.penyulangAsalNama}</span>
+						<div class="w-[32%] flex flex-col gap-1 pr-2">
+							<div class="flex items-center gap-2">
+								<div class="flex flex-col min-w-[40%] flex-1 overflow-hidden">
+									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter truncate" title={m.penyulangAsalUlp}>{m.penyulangAsalUlp}</span>
+									<span class="text-sm font-black text-slate-800 leading-tight truncate" title={m.penyulangAsalNama}>{m.penyulangAsalNama}</span>
 								</div>
-								<ArrowRight class="w-4 h-4 text-slate-300 flex-shrink-0" />
-								<div class="flex flex-col min-w-0">
-									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{m.penyulangTujuanUlp}</span>
-									<span class="text-base font-black text-slate-800 leading-tight">{m.penyulangTujuanNama}</span>
+								<div class="px-2 flex-shrink-0">
+									<ArrowRight class="w-4 h-4 text-[#00A2E9]" />
+								</div>
+								<div class="flex flex-col min-w-[40%] flex-1 items-end text-right overflow-hidden">
+									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter truncate" title={m.penyulangTujuanUlp}>{m.penyulangTujuanUlp}</span>
+									<span class="text-sm font-black text-slate-800 leading-tight truncate" title={m.penyulangTujuanNama}>{m.penyulangTujuanNama}</span>
 								</div>
 							</div>
-							<div class="text-[9px] font-bold text-slate-400 italic">
+							<div class="text-[9px] font-bold text-slate-400 italic truncate" title={m.keterangan}>
 								{m.keterangan || '-'}
 							</div>
 						</div>
 
 						<!-- 2. Status Badge -->
-						<div class="w-[8%] flex justify-center">
+						<div class="w-[7%] flex justify-center">
 							{#if m.status === 'AKTIF'}
 								<div class="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-full border border-red-100 flex items-center gap-1.5 shadow-sm">
 									<div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></div>
@@ -189,7 +191,7 @@
 						</div>
 
 						<!-- 3. Maneuver Cluster -->
-						<div class="w-[18%] bg-indigo-50/20 rounded-2xl p-3 border border-indigo-100/50 flex flex-col gap-2">
+						<div class="w-[16%] bg-indigo-50/20 rounded-2xl p-3 border border-indigo-100/50 flex flex-col gap-2">
 							<div class="flex items-center justify-between gap-2 overflow-hidden">
 								<div class="flex items-center gap-1.5 overflow-hidden">
 									<span class="text-[7px] font-black text-indigo-400 bg-white px-1 rounded border border-indigo-100 flex-shrink-0">ASAL</span>
@@ -212,7 +214,7 @@
 						</div>
 
 						<!-- 4. Normal Cluster -->
-						<div class="w-[16%] px-2">
+						<div class="w-[14%] px-2">
 							{#if m.status === 'NORMAL'}
 								<div class="bg-emerald-50/20 rounded-2xl p-3 border border-emerald-100/50 flex flex-col gap-2">
 									<div class="flex items-center justify-between gap-2 overflow-hidden">
@@ -243,7 +245,7 @@
 						</div>
 
 						<!-- 5. Beban -->
-						<div class="w-[8%] flex flex-col items-center justify-center">
+						<div class="w-[7%] flex flex-col items-center justify-center">
 							<div class="flex items-baseline gap-1">
 								<span class="text-xl font-black text-slate-700 tabular-nums leading-none">{m.bebanAmpereManuver}</span>
 								<span class="text-[9px] font-black text-slate-300">A</span>
@@ -252,7 +254,7 @@
 						</div>
 
 						<!-- 6. Waktu Log -->
-						<div class="w-[10%] flex flex-col items-center justify-center text-center gap-1.5 border-l border-slate-50 px-2">
+						<div class="w-[9%] flex flex-col items-center justify-center text-center gap-1.5 border-l border-slate-50 px-2">
 							<!-- Start Phase (Manuver) -->
 							<div class="flex flex-col items-center leading-none">
 								<span class="text-[11px] font-black text-slate-700">{m.waktuManuverJam}</span>
@@ -283,7 +285,7 @@
 						</div>
 
 						<!-- 8. Aksi -->
-						<div class="w-[5%] flex items-center justify-end gap-2 px-2">
+						<div class="w-[10%] flex items-center justify-end gap-1.5 pl-2">
 							{#if m.status === 'AKTIF'}
 								<a 
 									href="/manuver/{m.id}/penormalan"
