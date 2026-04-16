@@ -135,7 +135,7 @@
 			<div class="w-[7%] text-center">Beban</div>
 			<div class="w-[9%] text-center">Waktu Log</div>
 			<div class="w-[5%] text-center">Durasi</div>
-			<div class="w-[10%] text-right">Aksi</div>
+			<div class="w-[10%] text-center">Aksi</div>
 		</div>
 
 		<div class="divide-y divide-slate-100 italic-last-row">
@@ -285,7 +285,7 @@
 						</div>
 
 						<!-- 8. Aksi -->
-						<div class="w-[10%] flex items-center justify-end gap-1.5 pl-2">
+						<div class="w-[10%] flex items-center justify-center gap-1.5 px-2">
 							{#if m.status === 'AKTIF'}
 								<a 
 									href="/manuver/{m.id}/penormalan"
