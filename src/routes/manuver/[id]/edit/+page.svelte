@@ -10,7 +10,9 @@
 		Activity,
 		ArrowRight,
 		Layers,
-		FileEdit
+		FileEdit,
+		Search,
+		CheckCircle2
 	} from 'lucide-svelte';
 	import { clsx, type ClassValue } from 'clsx';
 	import { twMerge } from 'tailwind-merge';
@@ -36,15 +38,24 @@
 	let selectedAsalId = $state<number | null>(m.penyulangAsalId);
 	let selectedTujuanId = $state<number | null>(m.penyulangTujuanId);
 
+	let searchPenyulangAsal = $state('');
+	let searchPenyulangTujuan = $state('');
+
 	const penyulangsAsal = $derived(
 		selectedULPAsal 
-			? data.listPenyulang.filter(p => p.ulp.toUpperCase().includes(selectedULPAsal!.toUpperCase()))
+			? data.listPenyulang.filter(p => 
+				p.ulp.toUpperCase().includes(selectedULPAsal!.toUpperCase()) &&
+				(!searchPenyulangAsal || p.nama.toLowerCase().includes(searchPenyulangAsal.toLowerCase()))
+			)
 			: []
 	);
 
 	const penyulangsTujuan = $derived(
 		selectedULPTujuan 
-			? data.listPenyulang.filter(p => p.ulp.toUpperCase().includes(selectedULPTujuan!.toUpperCase()))
+			? data.listPenyulang.filter(p => 
+				p.ulp.toUpperCase().includes(selectedULPTujuan!.toUpperCase()) &&
+				(!searchPenyulangTujuan || p.nama.toLowerCase().includes(searchPenyulangTujuan.toLowerCase()))
+			)
 			: []
 	);
 
@@ -68,6 +79,13 @@
 	let pelaksanaanAsal = $state(m.pelaksanaanAsal || '');
 	let pelaksanaanTujuan = $state(m.pelaksanaanTujuan || '');
 	let keterangan = $state(m.keterangan || '');
+
+	let status = $state(m.status);
+	let sectionAsalPenormalan = $state(m.sectionAsalPenormalan || '');
+	let sectionTujuanPenormalan = $state(m.sectionTujuanPenormalan || '');
+	let pelaksanaanAsalPenormalan = $state(m.pelaksanaanAsalPenormalan || '');
+	let pelaksanaanTujuanPenormalan = $state(m.pelaksanaanTujuanPenormalan || '');
+	let waktuPenormalan = $state(getLocalIsoFromDb(m.waktuPenormalan));
 
 	let submitting = $state(false);
 
@@ -158,13 +176,21 @@
 								</select>
 							</div>
 							<div class="space-y-2">
-								<label for="penyulangAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Nama Penyulang</label>
-								<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedULPAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-									<option value={null}>-- Pilih Penyulang ({penyulangsAsal.length}) --</option>
-									{#each penyulangsAsal as p}
-										<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
-									{/each}
-								</select>
+								<div class="flex items-center justify-between pl-1">
+									<label for="penyulangAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Penyulang</label>
+								</div>
+								<div class="relative grid gap-2">
+									<div class="relative cursor-text group/search">
+										<Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#00A2E9] transition-colors" />
+										<input type="text" bind:value={searchPenyulangAsal} disabled={!selectedULPAsal} placeholder="Cari nama penyulang..." class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
+									</div>
+									<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedULPAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+										<option value={null}>-- Pilih Penyulang ({penyulangsAsal.length}) --</option>
+										{#each penyulangsAsal as p}
+											<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
+										{/each}
+									</select>
+								</div>
 							</div>
 
 						</div>
@@ -185,13 +211,21 @@
 								</select>
 							</div>
 							<div class="space-y-2">
-								<label for="penyulangTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Nama Penyulang</label>
-								<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedULPTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-									<option value={null}>-- Pilih Penyulang ({penyulangsTujuan.length}) --</option>
-									{#each penyulangsTujuan as p}
-										<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
-									{/each}
-								</select>
+								<div class="flex items-center justify-between pl-1">
+									<label for="penyulangTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Penyulang</label>
+								</div>
+								<div class="relative grid gap-2">
+									<div class="relative cursor-text group/search">
+										<Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#00A2E9] transition-colors" />
+										<input type="text" bind:value={searchPenyulangTujuan} disabled={!selectedULPTujuan} placeholder="Cari nama penyulang..." class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
+									</div>
+									<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedULPTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+										<option value={null}>-- Pilih Penyulang ({penyulangsTujuan.length}) --</option>
+										{#each penyulangsTujuan as p}
+											<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
+										{/each}
+									</select>
+								</div>
 							</div>
 
 						</div>
@@ -282,8 +316,76 @@
 					</div>
 				</div>
 			</div>
+			
+			<input type="hidden" name="status" value={status} />
 
-			<div class="pt-8 flex gap-6 relative z-10 border-t border-slate-100">
+			{#if status === 'NORMAL'}
+				<!-- Penormalan Section (Only visible if Already Normalized) -->
+				<div class="bg-emerald-50/50 p-8 rounded-[2.5rem] border border-emerald-100/50 space-y-6 relative z-10 mt-8 slide-in">
+					<div class="flex items-center gap-2 mb-4">
+						<CheckCircle2 class="w-6 h-6 text-emerald-500" />
+						<div>
+							<h4 class="text-xl font-black text-emerald-700 tracking-tight">Data Penormalan (Sudah Normal)</h4>
+							<p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest leading-none">Ubah data di bawah jika ada kesalahan pada log penormalan</p>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div class="space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-emerald-100/50">
+							<div class="flex items-center gap-2 border-b border-emerald-50 pb-3 mb-2">
+								<MapPin class="w-4 h-4 text-emerald-500" />
+								<h5 class="font-bold text-emerald-700">Penormalan Asal</h5>
+							</div>
+							<div class="space-y-2">
+								<label for="sectionAsalPenormalan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Section Asal (Normal)</label>
+								<input type="text" id="sectionAsalPenormalan" name="sectionAsalPenormalan" bind:value={sectionAsalPenormalan} required placeholder="Titik Section..." class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all font-bold text-slate-700" />
+							</div>
+							<div class="space-y-2">
+								<label for="pelaksanaanAsalPenormalan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Metode Eksekusi Asal</label>
+								<select id="pelaksanaanAsalPenormalan" name="pelaksanaanAsalPenormalan" bind:value={pelaksanaanAsalPenormalan} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all font-bold text-slate-700 cursor-pointer">
+									<option value="">-- Plh Metode --</option>
+									{#each eksekusiOpsi as opsi}
+										<option value={opsi}>{opsi}</option>
+									{/each}
+								</select>
+							</div>
+						</div>
+
+						<div class="space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-teal-100/50">
+							<div class="flex items-center gap-2 border-b border-teal-50 pb-3 mb-2">
+								<ArrowRight class="w-4 h-4 text-teal-500" />
+								<h5 class="font-bold text-teal-700">Penormalan Tujuan</h5>
+							</div>
+							<div class="space-y-2">
+								<label for="sectionTujuanPenormalan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Section Tujuan (Normal)</label>
+								<input type="text" id="sectionTujuanPenormalan" name="sectionTujuanPenormalan" bind:value={sectionTujuanPenormalan} required placeholder="Titik Section..." class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/20 transition-all font-bold text-slate-700" />
+							</div>
+							<div class="space-y-2">
+								<label for="pelaksanaanTujuanPenormalan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Metode Eksekusi Tujuan</label>
+								<select id="pelaksanaanTujuanPenormalan" name="pelaksanaanTujuanPenormalan" bind:value={pelaksanaanTujuanPenormalan} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/20 transition-all font-bold text-slate-700 cursor-pointer">
+									<option value="">-- Plh Metode --</option>
+									{#each eksekusiOpsi as opsi}
+										<option value={opsi}>{opsi}</option>
+									{/each}
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100/50 mt-6">
+						<div class="flex items-center gap-2 border-b border-emerald-50 pb-3 mb-4">
+							<Calendar class="w-4 h-4 text-emerald-500" />
+							<h5 class="font-bold text-emerald-700">Waktu Penormalan</h5>
+						</div>
+						<div class="space-y-2">
+							<label for="waktuPenormalan" class="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Waktu Selesai (Normal)</label>
+							<input type="datetime-local" id="waktuPenormalan" name="waktuPenormalan" bind:value={waktuPenormalan} required class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all font-black text-slate-700" />
+						</div>
+					</div>
+				</div>
+			{/if}
+
+			<div class="pt-8 flex gap-6 relative z-10 border-t border-slate-100 mt-8">
 				<a 
 					href="/manuver"
 					class="flex-1 px-8 py-5 bg-slate-100 rounded-3xl text-slate-500 font-black text-center hover:bg-slate-200 transition-all active:scale-95 disabled:opacity-50 inline-block"

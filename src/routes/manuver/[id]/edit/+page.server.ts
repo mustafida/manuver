@@ -53,6 +53,13 @@ export const actions: Actions = {
 		const keterangan = formData.get('keterangan')?.toString()?.trim();
 		const ulpAsal = formData.get('ulpAsal')?.toString()?.trim();
 		const ulpTujuan = formData.get('ulpTujuan')?.toString()?.trim();
+		
+		const status = formData.get('status')?.toString() === 'NORMAL' ? 'NORMAL' : 'AKTIF';
+		const sectionAsalPenormalan = formData.get('sectionAsalPenormalan')?.toString()?.trim();
+		const sectionTujuanPenormalan = formData.get('sectionTujuanPenormalan')?.toString()?.trim();
+		const pelaksanaanAsalPenormalan = formData.get('pelaksanaanAsalPenormalan')?.toString()?.trim();
+		const pelaksanaanTujuanPenormalan = formData.get('pelaksanaanTujuanPenormalan')?.toString()?.trim();
+		const waktuPenormalanStr = formData.get('waktuPenormalan')?.toString();
 
 		if (!penyulangAsalId) return fail(400, { message: 'Penyulang Asal wajib dipilih.' });
 		if (!penyulangTujuanId) return fail(400, { message: 'Penyulang Tujuan wajib dipilih.' });
@@ -65,12 +72,27 @@ export const actions: Actions = {
 		if (!pelaksanaanAsal) return fail(400, { message: 'Metode Eksekusi Asal wajib dipilih.' });
 		if (!pelaksanaanTujuan) return fail(400, { message: 'Metode Eksekusi Tujuan wajib dipilih.' });
 		if (!keterangan) return fail(400, { message: 'Keterangan wajib diisi.' });
+		
+		if (status === 'NORMAL') {
+			if (!sectionAsalPenormalan) return fail(400, { message: 'Section Asal Penormalan wajib diisi.' });
+			if (!sectionTujuanPenormalan) return fail(400, { message: 'Section Tujuan Penormalan wajib diisi.' });
+			if (!pelaksanaanAsalPenormalan) return fail(400, { message: 'Eksekusi Asal Penormalan wajib dipilih.' });
+			if (!pelaksanaanTujuanPenormalan) return fail(400, { message: 'Eksekusi Tujuan Penormalan wajib dipilih.' });
+			if (!waktuPenormalanStr) return fail(400, { message: 'Waktu Penormalan wajib diisi.' });
+		}
 
 		try {
 			const waktuManuver = new Date(waktuManuverStr + ":00+07:00");
+			let waktuPenormalan = null;
+			let durasi = null;
+
+			if (status === 'NORMAL' && waktuPenormalanStr) {
+				waktuPenormalan = new Date(waktuPenormalanStr + ":00+07:00");
+				durasi = Math.floor((waktuPenormalan.getTime() - waktuManuver.getTime()) / (1000 * 60));
+			}
 
 			await db.transaction(async (tx) => {
-				await tx.update(manuver).set({
+				const updateData: any = {
 					penyulangAsalId,
 					penyulangTujuanId,
 					sectionAsal,
@@ -83,7 +105,18 @@ export const actions: Actions = {
 					pelaksanaanAsal,
 					pelaksanaanTujuan,
 					keterangan
-				}).where(eq(manuver.id, id));
+				};
+
+				if (status === 'NORMAL') {
+					updateData.sectionAsalPenormalan = sectionAsalPenormalan;
+					updateData.sectionTujuanPenormalan = sectionTujuanPenormalan;
+					updateData.pelaksanaanAsalPenormalan = pelaksanaanAsalPenormalan;
+					updateData.pelaksanaanTujuanPenormalan = pelaksanaanTujuanPenormalan;
+					updateData.waktuPenormalan = waktuPenormalan;
+					updateData.durasi = durasi;
+				}
+
+				await tx.update(manuver).set(updateData).where(eq(manuver.id, id));
 			});
 
 		} catch (e) {

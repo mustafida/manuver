@@ -40,15 +40,24 @@
 	let selectedAsalId = $state<number | null>(null);
 	let selectedTujuanId = $state<number | null>(null);
 
+	let searchPenyulangAsal = $state('');
+	let searchPenyulangTujuan = $state('');
+
 	const penyulangsAsal = $derived(
 		selectedULPAsal 
-			? data.listPenyulang.filter(p => p.ulp.toUpperCase().includes(selectedULPAsal!.toUpperCase()))
+			? data.listPenyulang.filter(p => 
+				p.ulp.toUpperCase().includes(selectedULPAsal!.toUpperCase()) &&
+				(!searchPenyulangAsal || p.nama.toLowerCase().includes(searchPenyulangAsal.toLowerCase()))
+			)
 			: []
 	);
 
 	const penyulangsTujuan = $derived(
 		selectedULPTujuan 
-			? data.listPenyulang.filter(p => p.ulp.toUpperCase().includes(selectedULPTujuan!.toUpperCase()))
+			? data.listPenyulang.filter(p => 
+				p.ulp.toUpperCase().includes(selectedULPTujuan!.toUpperCase()) &&
+				(!searchPenyulangTujuan || p.nama.toLowerCase().includes(searchPenyulangTujuan.toLowerCase()))
+			)
 			: []
 	);
 
@@ -174,13 +183,21 @@
 								</select>
 							</div>
 							<div class="space-y-2">
-								<label for="penyulangAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Nama Penyulang</label>
-								<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedULPAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-									<option value={null}>-- Pilih Penyulang ({penyulangsAsal.length}) --</option>
-									{#each penyulangsAsal as p}
-										<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
-									{/each}
-								</select>
+								<div class="flex items-center justify-between pl-1">
+									<label for="penyulangAsal" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Penyulang</label>
+								</div>
+								<div class="relative grid gap-2">
+									<div class="relative cursor-text group/search">
+										<Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#00A2E9] transition-colors" />
+										<input type="text" bind:value={searchPenyulangAsal} disabled={!selectedULPAsal} placeholder="Cari nama penyulang..." class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
+									</div>
+									<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedULPAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+										<option value={null}>-- Pilih Penyulang ({penyulangsAsal.length}) --</option>
+										{#each penyulangsAsal as p}
+											<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
+										{/each}
+									</select>
+								</div>
 							</div>
 
 						</div>
@@ -201,13 +218,21 @@
 								</select>
 							</div>
 							<div class="space-y-2">
-								<label for="penyulangTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Nama Penyulang</label>
-								<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedULPTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-									<option value={null}>-- Pilih Penyulang ({penyulangsTujuan.length}) --</option>
-									{#each penyulangsTujuan as p}
-										<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
-									{/each}
-								</select>
+								<div class="flex items-center justify-between pl-1">
+									<label for="penyulangTujuan" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Penyulang</label>
+								</div>
+								<div class="relative grid gap-2">
+									<div class="relative cursor-text group/search">
+										<Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#00A2E9] transition-colors" />
+										<input type="text" bind:value={searchPenyulangTujuan} disabled={!selectedULPTujuan} placeholder="Cari nama penyulang..." class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
+									</div>
+									<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedULPTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+										<option value={null}>-- Pilih Penyulang ({penyulangsTujuan.length}) --</option>
+										{#each penyulangsTujuan as p}
+											<option value={p.id}>{p.nama} - TRAFO-{p.trf || '-'}</option>
+										{/each}
+									</select>
+								</div>
 							</div>
 
 						</div>

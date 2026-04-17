@@ -156,16 +156,16 @@
 						)}></div>
 
 						<!-- 1. Feeder Block -->
-						<div class="w-[32%] flex flex-col gap-1 pr-2">
-							<div class="flex items-center gap-2">
-								<div class="flex flex-col min-w-[40%] flex-1 overflow-hidden">
+						<div class="w-[32%] flex flex-col gap-1 pr-4">
+							<div class="flex items-center gap-2.5">
+								<div class="flex flex-col min-w-0 max-w-[45%]">
 									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter truncate" title={m.penyulangAsalUlp}>{m.penyulangAsalUlp}</span>
 									<span class="text-sm font-black text-slate-800 leading-tight truncate" title={m.penyulangAsalNama}>{m.penyulangAsalNama}</span>
 								</div>
-								<div class="px-2 flex-shrink-0">
-									<ArrowRight class="w-4 h-4 text-[#00A2E9]" />
+								<div class="flex-shrink-0 mt-2">
+									<ArrowRight class="w-3.5 h-3.5 text-[#00A2E9]/70" />
 								</div>
-								<div class="flex flex-col min-w-[40%] flex-1 items-end text-right overflow-hidden">
+								<div class="flex flex-col min-w-0 max-w-[45%]">
 									<span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter truncate" title={m.penyulangTujuanUlp}>{m.penyulangTujuanUlp}</span>
 									<span class="text-sm font-black text-slate-800 leading-tight truncate" title={m.penyulangTujuanNama}>{m.penyulangTujuanNama}</span>
 								</div>
@@ -285,7 +285,7 @@
 						</div>
 
 						<!-- 8. Aksi -->
-						<div class="w-[10%] flex items-center justify-center gap-1.5 px-2">
+						<div class="w-[10%] flex items-center justify-center gap-1.5 px-2 flex-shrink-0 relative z-20">
 							{#if m.status === 'AKTIF'}
 								<a 
 									href="/manuver/{m.id}/penormalan"
@@ -297,19 +297,19 @@
 							{/if}
 							<a 
 								href="/manuver/{m.id}/edit"
-								class="p-1.5 text-slate-300 hover:text-amber-500 transition-all rounded-lg"
+								class="p-1.5 text-slate-400 hover:text-amber-500 transition-all rounded-lg inline-flex"
 								title="Edit Manuver"
 							>
-								<FileEdit class="w-3.5 h-3.5" />
+								<FileEdit class="w-4 h-4" />
 							</a>
 							<form action="?/delete" method="POST" use:enhance>
 								<input type="hidden" name="id" value={m.id}>
 								<button 
 									type="submit" 
-									class="p-1.5 text-slate-200 hover:text-red-500 transition-all rounded-lg"
+									class="p-1.5 text-slate-300 hover:text-red-500 transition-all rounded-lg inline-flex"
 									onclick={(e) => { if(!confirm('Yakin ingin menghapus data manuver ini?')) e.preventDefault(); }}
 								>
-									<Trash2 class="w-3.5 h-3.5" />
+									<Trash2 class="w-4 h-4" />
 								</button>
 							</form>
 						</div>
