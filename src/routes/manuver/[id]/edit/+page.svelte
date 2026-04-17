@@ -182,7 +182,7 @@
 								<div class="relative grid gap-2">
 									<div class="relative cursor-text group/search">
 										<Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#00A2E9] transition-colors" />
-										<input type="text" bind:value={searchPenyulangAsal} disabled={!selectedULPAsal} placeholder="Cari nama penyulang..." class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
+										<input type="text" bind:value={searchPenyulangAsal} disabled={!selectedULPAsal} placeholder="Cari nama penyulang..." onkeydown={(e) => { if (e.key === 'Enter') e.preventDefault(); }} class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
 									</div>
 									<select id="penyulangAsal" name="penyulangAsalId" bind:value={selectedAsalId} required disabled={!selectedULPAsal} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
 										<option value={null}>-- Pilih Penyulang ({penyulangsAsal.length}) --</option>
@@ -217,7 +217,7 @@
 								<div class="relative grid gap-2">
 									<div class="relative cursor-text group/search">
 										<Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/search:text-[#00A2E9] transition-colors" />
-										<input type="text" bind:value={searchPenyulangTujuan} disabled={!selectedULPTujuan} placeholder="Cari nama penyulang..." class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
+										<input type="text" bind:value={searchPenyulangTujuan} disabled={!selectedULPTujuan} placeholder="Cari nama penyulang..." onkeydown={(e) => { if (e.key === 'Enter') e.preventDefault(); }} class="w-full bg-slate-50 border-transparent rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#00A2E9] focus:ring-2 focus:ring-[#00A2E9]/10 transition-all text-xs font-bold text-slate-700 disabled:opacity-50" />
 									</div>
 									<select id="penyulangTujuan" name="penyulangTujuanId" bind:value={selectedTujuanId} required disabled={!selectedULPTujuan} class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 focus:bg-white focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-bold text-slate-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
 										<option value={null}>-- Pilih Penyulang ({penyulangsTujuan.length}) --</option>
