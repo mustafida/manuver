@@ -65,7 +65,7 @@
 	const selectedPenyulangAsal = $derived(data.listPenyulang.find(p => p.id === selectedAsalId));
 	const selectedPenyulangTujuan = $derived(data.listPenyulang.find(p => p.id === selectedTujuanId));
 
-	const eksekusiOpsi = ['Remote SCADA', 'Manual Panel', 'Manual Stick'];
+	const eksekusiOpsi = ['Remote SCADA', 'Manual Panel', 'Manual Stick', 'Engkol Besi'];
 
 	const getNowStr = () => {
 		const now = new Date();

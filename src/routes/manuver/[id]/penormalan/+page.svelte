@@ -65,6 +65,7 @@
 						<option value="Remote SCADA">Remote SCADA</option>
 						<option value="Manual Panel">Manual Panel</option>
 						<option value="Manual Stick">Manual Stick</option>
+						<option value="Engkol Besi">Engkol Besi</option>
 					</select>
 				</div>
 				<div>
@@ -74,6 +75,7 @@
 						<option value="Remote SCADA">Remote SCADA</option>
 						<option value="Manual Panel">Manual Panel</option>
 						<option value="Manual Stick">Manual Stick</option>
+						<option value="Engkol Besi">Engkol Besi</option>
 					</select>
 				</div>
 			</div>
