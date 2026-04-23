@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { browser } from '$app/environment';
 	import type { PageData } from './$types';
 	import { 
 		Plus, 
@@ -30,7 +31,27 @@
 	let searchQuery = $state('');
 	let filterStatus = $state('All');
 	let currentPage = $state(1);
+	let isInitialized = false;
 	const itemsPerPage = 50;
+
+	$effect(() => {
+		if (browser && !isInitialized) {
+			const savedPage = sessionStorage.getItem('manuverCurrentPage');
+			if (savedPage) {
+				const parsed = parseInt(savedPage, 10);
+				if (!isNaN(parsed) && parsed > 0) {
+					currentPage = parsed;
+				}
+			}
+			isInitialized = true;
+		}
+	});
+
+	$effect(() => {
+		if (browser && isInitialized) {
+			sessionStorage.setItem('manuverCurrentPage', currentPage.toString());
+		}
+	});
 
 	let filteredManuvers = $derived(
 		data.listManuver.filter((m) => {
