@@ -29,6 +29,8 @@
 
 	let searchQuery = $state('');
 	let filterStatus = $state('All');
+	let currentPage = $state(1);
+	const itemsPerPage = 50;
 
 	let filteredManuvers = $derived(
 		data.listManuver.filter((m) => {
@@ -39,6 +41,9 @@
 			return matchesSearch && matchesStatus;
 		})
 	);
+
+	let totalPages = $derived(Math.max(1, Math.ceil(filteredManuvers.length / itemsPerPage)));
+	let paginatedManuvers = $derived(filteredManuvers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
 </script>
 
 <div class="space-y-8 animate-in fade-in duration-500">
@@ -100,6 +105,7 @@
 				type="text" 
 				placeholder="Cari Penyulang atau ULP..." 
 				bind:value={searchQuery}
+				oninput={() => currentPage = 1}
 				class="w-full pl-14 pr-6 py-4 bg-slate-100/50 border-2 border-transparent rounded-[1.25rem] focus:bg-white focus:border-[#00A2E9]/30 focus:ring-8 focus:ring-[#00A2E9]/5 transition-all font-bold text-slate-700 placeholder:text-slate-400"
 			/>
 		</div>
@@ -111,6 +117,7 @@
 				</div>
 				<select 
 					bind:value={filterStatus}
+					onchange={() => currentPage = 1}
 					class="w-full pl-11 pr-10 py-4 bg-slate-100/50 border-2 border-transparent rounded-[1.25rem] focus:bg-white focus:border-[#00A2E9]/30 transition-all font-black text-slate-600 text-xs uppercase tracking-widest appearance-none cursor-pointer"
 				>
 					<option value="All">Semua Status</option>
@@ -139,7 +146,7 @@
 		</div>
 
 		<div class="divide-y divide-slate-100 italic-last-row">
-			{#if filteredManuvers.length === 0}
+			{#if paginatedManuvers.length === 0}
 				<div class="py-24 text-center space-y-4">
 					<div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-200">
 						<Database class="w-10 h-10" />
@@ -147,7 +154,7 @@
 					<p class="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">Data tidak ditemukan</p>
 				</div>
 			{:else}
-				{#each filteredManuvers as m, index}
+				{#each paginatedManuvers as m, index}
 					<div class="hover:bg-slate-50/50 transition-all group flex items-center px-10 py-6 gap-4 relative">
 						<!-- Progress Line (Left) -->
 						<div class={cn(
@@ -321,17 +328,25 @@
 		<!-- Footer / Pagination -->
 		<div class="bg-white border-t border-slate-50 px-8 py-5 flex items-center justify-between">
 			<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">
-				Showing {filteredManuvers.length} to {filteredManuvers.length} of {filteredManuvers.length} entries
+				Showing {filteredManuvers.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, filteredManuvers.length)} of {filteredManuvers.length} entries
 			</p>
 			
 			<div class="flex gap-2">
-				<button class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors disabled:opacity-30" disabled>
+				<button 
+					class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
+					disabled={currentPage === 1}
+					onclick={() => currentPage > 1 && currentPage--}
+				>
 					<ChevronLeft class="w-5 h-5" />
 				</button>
 				<button class="w-10 h-10 rounded-xl bg-[#00A2E9] flex items-center justify-center text-white font-black text-sm shadow-md shadow-[#00A2E9]/20">
-					1
+					{currentPage}
 				</button>
-				<button class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors">
+				<button 
+					class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+					disabled={currentPage >= totalPages}
+					onclick={() => currentPage < totalPages && currentPage++}
+				>
 					<ChevronRight class="w-5 h-5" />
 				</button>
 			</div>
