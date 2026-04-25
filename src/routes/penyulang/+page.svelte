@@ -54,12 +54,12 @@
 
 			<div>
 				<label for="bebanSiang" class="block text-sm font-medium text-slate-600 mb-1">Beban Siang (07.00 - 16.00) *Ampere</label>
-				<input type="number" step="0.01" min="0" id="bebanSiang" name="bebanSiang" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="0.00">
+				<input type="number" step="any" min="0" id="bebanSiang" name="bebanSiang" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#00A2E9] focus:ring focus:ring-[#00A2E9]/20 transition" placeholder="0.00">
 			</div>
 
 			<div>
 				<label for="bebanMalam" class="block text-sm font-medium text-slate-600 mb-1">Beban Malam (16.00 - 07.00) *Ampere</label>
-				<input type="number" step="0.01" min="0" id="bebanMalam" name="bebanMalam" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#0089C5] border-2 focus:ring focus:ring-[#0089C5]/20 transition font-bold" placeholder="0.00">
+				<input type="number" step="any" min="0" id="bebanMalam" name="bebanMalam" required class="w-full rounded-xl border-slate-200 shadow-sm focus:border-[#0089C5] border-2 focus:ring focus:ring-[#0089C5]/20 transition font-bold" placeholder="0.00">
 			</div>
 
 			<button type="submit" class="w-full bg-[#00A2E9] hover:bg-[#007BB5] text-white font-medium py-2.5 rounded-xl transition hover:-translate-y-0.5 shadow-md shadow-[#00A2E9]/20 mt-4">

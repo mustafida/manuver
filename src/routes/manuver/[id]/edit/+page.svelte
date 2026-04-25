@@ -72,8 +72,8 @@
 	};
 
 	let waktuManuver = $state(getLocalIsoFromDb(m.waktuManuver));
-	let bebanSebelum = $state<number | string>(m.bebanSebelum);
-	let bebanAmpereManuver = $state<number>(m.bebanAmpereManuver);
+	let bebanSebelum = $state<number | string>(m.bebanSebelum ? Math.round(Number(m.bebanSebelum) * 100) / 100 : '');
+	let bebanAmpereManuver = $state<number | string>(m.bebanAmpereManuver ? Math.round(Number(m.bebanAmpereManuver) * 100) / 100 : '');
 	let sectionAsal = $state(m.sectionAsal || '');
 	let sectionTujuan = $state(m.sectionTujuan || '');
 	let pelaksanaanAsal = $state(m.pelaksanaanAsal || '');
@@ -289,7 +289,7 @@
 							<label for="bebanSebelum" class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Beban Existing</label>
 						</div>
 						<div class="relative">
-							<input type="number" step="0.01" min="0" required id="bebanSebelum" name="bebanSebelum" bind:value={bebanSebelum} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
+							<input type="number" step="any" min="0" required id="bebanSebelum" name="bebanSebelum" bind:value={bebanSebelum} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
 							<span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-[10px]">AMPERE</span>
 						</div>
 					</div>
@@ -297,7 +297,7 @@
 					<div class="space-y-2">
 						<label for="bebanAmpereManuver" class="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Beban Manuver</label>
 						<div class="relative">
-							<input type="number" step="0.01" min="0.01" required id="bebanAmpereManuver" name="bebanAmpereManuver" bind:value={bebanAmpereManuver} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
+							<input type="number" step="any" min="0.01" required id="bebanAmpereManuver" name="bebanAmpereManuver" bind:value={bebanAmpereManuver} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
 							<span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-[10px]">AMPERE</span>
 						</div>
 					</div>

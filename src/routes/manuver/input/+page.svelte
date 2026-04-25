@@ -97,7 +97,7 @@
 	// Auto-fill effect: strictly follows the suggested load
 	$effect(() => {
 		if (suggestedBeban !== null) {
-			bebanSebelum = suggestedBeban;
+			bebanSebelum = Math.round(suggestedBeban * 100) / 100;
 		}
 	});
 </script>
@@ -304,7 +304,7 @@
 							{/if}
 						</div>
 						<div class="relative">
-							<input type="number" step="0.01" min="0" required id="bebanSebelum" name="bebanSebelum" bind:value={bebanSebelum} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
+							<input type="number" step="any" min="0" required id="bebanSebelum" name="bebanSebelum" bind:value={bebanSebelum} placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
 							<span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-[10px]">AMPERE</span>
 						</div>
 					</div>
@@ -312,7 +312,7 @@
 					<div class="space-y-2">
 						<label for="bebanAmpereManuver" class="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Beban Manuver</label>
 						<div class="relative">
-							<input type="number" step="0.01" min="0.01" required id="bebanAmpereManuver" name="bebanAmpereManuver" placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
+							<input type="number" step="any" min="0.01" required id="bebanAmpereManuver" name="bebanAmpereManuver" placeholder="0.00" class="w-full bg-white border-transparent rounded-xl px-4 py-3 shadow-sm focus:border-[#00A2E9] focus:ring-4 focus:ring-[#00A2E9]/10 transition-all font-black text-slate-700 tabular-nums" />
 							<span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-[10px]">AMPERE</span>
 						</div>
 					</div>
